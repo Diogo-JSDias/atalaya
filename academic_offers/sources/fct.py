@@ -58,7 +58,7 @@ FUNDING_TYPES = (
      "Emprego científico"),
     (re.compile(r"bolsa(?:s)?(?:\s+de\s+investiga[cç][ãa]o|\s+de\s+doutoramento)?", re.I),
      "Bolsas"),
-    (re.compile(r"projetos?\s+(?:de\s+)?i\s*&\s*d|projetos?\s+de\s+investiga[cç][ãa]o|projetos?\s+explorat[oó]rios", re.I),
+    (re.compile(r"projetos?(?:\s+(?:de\s+)?i\s*&\s*d|\s+de\s+investiga[cç][ãa]o|\s+explorat[oó]rios|\s+icdt)?", re.I),
      "Projetos I&D"),
     (re.compile(r"institui[cç][õo]es?\s+i\s*&\s*d", re.I), "Instituições I&D"),
     (re.compile(r"infraestruturas?|computa[cç][ãa]o\s+avan[cç]ada", re.I), "Infraestruturas"),
@@ -79,7 +79,7 @@ SCIENTIFIC_DOMAINS = (
 
 
 def _normalise_text(value: str) -> str:
-    return " ".join(value.split()).strip(" :：\\t\\n")
+    return " ".join(value.split()).strip(" :：")
 
 
 def _date_values(text: str) -> list[tuple[int, dt.date]]:
@@ -163,12 +163,6 @@ def _funding_type(title: str, body: str, labelled_value: str = "") -> str:
                 return category
         if value in OTHER_FUNDING_TYPES:
             return "Outros"
-    # Only use a small leading portion of body text as a fallback, not arbitrary
-    # references to programmes buried in the eligibility/legal sections.
-    lead = body[:500]
-    for pattern, category in FUNDING_TYPES:
-        if pattern.search(lead):
-            return category
     return ""
 
 
