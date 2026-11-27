@@ -174,10 +174,15 @@ def _job_card(anchor):
         if parent.name in {"main", "body", "html", "[document]"}:
             break
         text = _clean(parent.get_text(" ", strip=True))
+        pdf_links = [
+            link for link in parent.find_all("a", href=True)
+            if _official_pdf_url(urljoin(LIST_URL, link["href"]))
+        ]
         if (
             re.search(r"Institui[cç][ãa]o\s*:", text, re.I)
             and re.search(r"Fun[cç][ãa]o\s+a\s+desempenhar\s*:", text, re.I)
-            and anchor in parent.find_all("a", href=True)
+            and len(pdf_links) == 1
+            and pdf_links[0] is anchor
         ):
             return parent
     return None
