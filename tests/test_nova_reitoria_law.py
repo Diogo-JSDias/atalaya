@@ -124,7 +124,7 @@ class NOVALawTests(unittest.TestCase):
             )
 
     def test_filters_expired_offer(self):
-        old = LAW_HTML.replace("14 de dezembro de 2026", "14 de outubro de 2026")
+        old = LAW_HTML.replace("14 de dezembro de 2026", "12 de outubro de 2026")
         notice = LAW_NOTICE.replace("19-11-2026", "19-09-2026")
         offers = parse_law(
             old,
