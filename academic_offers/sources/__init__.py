@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from ..models import Offer
-from . import calls, dr, fct, ulisboa, uporto
+from . import calls, dr, fct, uc_apply, ulisboa, uporto
 
 
 @dataclass
@@ -31,6 +31,8 @@ SOURCES: list[Source] = [
            lambda today, _d: ulisboa.scrape(today), may_be_empty=True),
     Source("uporto", "Universidade do Porto – arquivo de oportunidades abertas",
            lambda today, _d: uporto.scrape(today), may_be_empty=True),
+    Source("uc-apply", "Universidade de Coimbra – UC Apply (bolsas, docentes e investigadores)",
+           lambda today, _d: uc_apply.scrape(today), may_be_empty=True),
     Source("eu-ft", "EU Funding & Tenders – concursos ERC e MSCA",
            lambda today, _d: calls.eu_calls(today), may_be_empty=True),
 ]
