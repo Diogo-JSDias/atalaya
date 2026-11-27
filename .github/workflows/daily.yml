@@ -6,7 +6,7 @@ on:
   workflow_dispatch:        # "Run workflow" button in the Actions tab
   push:
     branches: [main]
-    paths: ["academic_offers/**", "templates/**", "requirements.txt", ".github/workflows/**"]
+    paths: ["academic_offers/**", "templates/**", "tests/**", "requirements.txt", ".github/workflows/**"]
 
 permissions:
   contents: write   # commit the updated database
@@ -31,8 +31,15 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-      - name: Unit tests
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Unit tests (Python)
         run: python -m unittest discover -s tests -v
+
+      - name: Unit tests (JavaScript / frontend)
+        run: node tests/test_frontend.js
 
       - name: Scrape and build
         env:
