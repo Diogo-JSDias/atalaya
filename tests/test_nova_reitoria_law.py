@@ -140,7 +140,8 @@ class NOVALawTests(unittest.TestCase):
             "/wp-content/uploads/2026/11/Edital-JUST-Listen.pdf",
             "https://evil.example/edital.pdf",
         )
-        self.assertEqual(parse_law(html, today=dt.date(2026, 11, 27)), [])
+        with self.assertRaises(RuntimeError):
+            parse_law(html, today=dt.date(2026, 11, 27))
 
 
 if __name__ == "__main__":
