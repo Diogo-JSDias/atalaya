@@ -38,6 +38,14 @@ Ordered by the latest available Nature Index Portugal institution-output positio
 | 10 | Laboratory of Instrumentation and Experimental Particle Physics (LIP) | Particle physics, astroparticle physics and instrumentation | **ULisboa, U.Porto, UC and UMinho:** universities are listed as LIP associates; also linked through the IDPASC network. | High: multi-university research employer; one LIP feed could complement several university feeds. |
 | 13 | Intelligent Systems Associate Laboratory (LASI) | AI, intelligent systems, robotics and digital technologies | **UMinho:** associated laboratory based at UMinho. **U.Porto, Aveiro and ULisboa:** documented domestic collaborations; includes research groups across institutions. | High: cross-university laboratory; source should identify the employing host institution for each vacancy. |
 
+## Additional research employer: i3S
+
+The **Instituto de Investigação e Inovação em Saúde (i3S)**, associated with the University of Porto, publishes its own official **Job Opportunities** index. It is a useful additional health and biomedical-science recruitment target, outside the five organisations selected in the Nature Index snapshot above.
+
+Atalaia now reads the official index, retains the vacancy-specific English job-description PDF (or Portuguese edital when no English PDF is available), and extracts the reference, scientific area, opening date and submission deadline. The visible “Apply” buttons on the listing lead to a generic application-management landing page, so they are not stored as vacancy-specific application links.
+
+Official listing: https://www.i3s.up.pt/job-opportunities
+
 ## Matching against current Atalaia coverage
 
 | Research organisation | Matched universities in top 10 | Existing Atalaia university coverage | Recommended treatment |
