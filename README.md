@@ -43,7 +43,7 @@ O GitHub Pages num plano gratuito exige um repositório público.
 | `uminho-eeg` | Universidade do Minho – EEG | Apenas concursos abertos para pessoal docente/investigador da Escola de Economia, Gestão e Ciência Política; não representa a cobertura central de toda a UMinho. |
 | `novafct-investigadores` | NOVA FCT | Concursos para investigadores na página oficial de recrutamento da Faculdade; não inclui concursos docentes ou não docentes. |
 | `ubi-docentes` | Universidade da Beira Interior | Concursos para pessoal docente em candidatura aberta; os concursos para investigadores não estão cobertos por esta fonte. |
-| `ua-investigacao`, `ua-docentes` | Universidade de Aveiro | Concursos de pessoal investigador e docente nas páginas oficiais de recursos humanos. |
+| `ua-investigacao`, `ua-docentes`, `ua-tecnico` | Universidade de Aveiro | Concursos de pessoal investigador e docente, mais o portal JobsUA para pessoal técnico, administrativo e de gestão. |
 | `iscte` | Iscte | Portal de concursos docentes, técnicos, investigação e bolsas; inclui a Associação Iscte Conhecimento e Inovação. |
 | `ucp-clsbe` | Universidade Católica Portuguesa – Católica-Lisbon | Oportunidades de docência, investigadores doutorados e bolsas publicadas pela CLSBE; não representa todas as escolas da UCP. |
 | `gimm` | GIMM | Página oficial de oportunidades abertas do instituto. |
