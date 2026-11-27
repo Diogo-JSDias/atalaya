@@ -54,9 +54,7 @@ def _iso_date(value: str) -> str | None:
     try:
         if re.fullmatch(r"20\d{2}-\d{2}-\d{2}", value):
             return dt.date.fromisoformat(value).isoformat()
-        match = re.fullmatch(r"(\d{1,2})[./-](\d{1,2})/(20\d{2})", value)
-        if not match:
-            match = re.fullmatch(r"(\d{1,2})[./-](\d{1,2})-(20\d{2})", value)
+        match = re.fullmatch(r"(\d{1,2})[./-](\d{1,2})[./-](20\d{2})", value)
         if match:
             day, month, year = (int(part) for part in match.groups())
             return dt.date(year, month, day).isoformat()
@@ -108,6 +106,25 @@ def _card_for_link(link):
     return card
 
 
+def _display_title(link_text: str, card_text: str, category: str, code: str) -> str:
+    """Remove card metadata from the visible title while preserving the original wording."""
+    candidate = link_text
+    if code and code in candidate:
+        candidate = candidate.split(code, 1)[1]
+    elif code and code in card_text:
+        candidate = card_text.split(code, 1)[1]
+    candidate = re.split(r"\\bUniversidade de Coimbra\\b|\\bCandidaturas\\b", candidate, maxsplit=1, flags=re.I)[0]
+    candidate = POSTS_RE.sub("", candidate)
+    candidate = " ".join(candidate.strip(" -–—|·:").split())
+    if not candidate or candidate.casefold() in {"ver mais", "consultar", "saber mais"}:
+        candidate = link_text
+    if not candidate:
+        candidate = card_text
+    if category.casefold() not in candidate.casefold():
+        return f"{category} — {candidate}"
+    return candidate
+
+
 def parse_listing(html: str, base_url: str = LIST_URL) -> list[Offer]:
     """Parse the public open-procedure search page."""
     soup = BeautifulSoup(html, "html.parser")
@@ -136,13 +153,7 @@ def parse_listing(html: str, base_url: str = LIST_URL) -> list[Offer]:
         n_posts = max(1, int(posts_match.group(1))) if posts_match else 1
         deadline = _deadline_from_text(card_text)
 
-        # If link text contains only a code or generic action label, use the
-        # descriptive part of the card. Otherwise preserve the publisher title.
-        title = title_text
-        if not title or title.casefold() in {"ver mais", "consultar", "saber mais"}:
-            title = card_text
-        if code and title.strip() == code:
-            title = card_text
+        title = _display_title(title_text, card_text, category, code)
 
         seen.add(url)
         is_scholarship = category.casefold().startswith("bolsas")
