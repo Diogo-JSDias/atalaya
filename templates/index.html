@@ -157,7 +157,7 @@ function card(o) {
     <a class="t" href="${esc(o.url)}" target="_blank" rel="noopener">${esc(o.title)}</a>
     <div class="side">${dl}</div>
     <div class="meta">${isNew}<span>${esc(o.institution)}</span>${o.region ? `<span>${esc(o.region)}</span>` : ""}
-      ${o.area_raw && !o.title.includes(o.area_raw) ? `<span>${esc(o.area_raw)}</span>` : ""}${o.extra && o.extra.fct_funding_type ? `<span>${esc(o.extra.fct_funding_type)}</span>` : ""}<span>${esc(o.stage)}${posts}</span>
+      ${o.area_raw && !o.title.includes(o.area_raw) ? `<span>${esc(o.area_raw)}</span>` : ""}${o.extra && o.extra.fct_funding_type ? `<span>${esc(o.extra.fct_funding_type)}</span>` : ""}${o.extra && o.extra.ulisboa_document_url ? `<a href="${esc(o.extra.ulisboa_document_url)}" target="_blank" rel="noopener">Documento</a>` : ""}<span>${esc(o.stage)}${posts}</span>
       ${o.notes ? `<span>${esc(o.notes)}</span>` : ""}</div>
     <div class="side"><span class="tag">${o.kind === "call" ? "Call" : "Position"}</span></div>
   </article>`;
