@@ -113,7 +113,7 @@ def _display_title(link_text: str, card_text: str, category: str, code: str) -> 
         candidate = candidate.split(code, 1)[1]
     elif code and code in card_text:
         candidate = card_text.split(code, 1)[1]
-    candidate = re.split(r"\\bUniversidade de Coimbra\\b|\\bCandidaturas\\b", candidate, maxsplit=1, flags=re.I)[0]
+    candidate = re.split(r"\bUniversidade de Coimbra\b|\bCandidaturas\b", candidate, maxsplit=1, flags=re.I)[0]
     candidate = POSTS_RE.sub("", candidate)
     candidate = " ".join(candidate.strip(" -–—|·:").split())
     if not candidate or candidate.casefold() in {"ver mais", "consultar", "saber mais"}:
