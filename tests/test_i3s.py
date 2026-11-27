@@ -31,7 +31,7 @@ class I3SSourceTests(unittest.TestCase):
           <h1>Job Opportunities</h1>
           <h2>Open Positions</h2>
           {_card(
-              "BOLSA DE INVESTIGAÇÃO</p><p>Bolseiro/Fellow",
+              "BOLSA DE INVESTIGAÇÃO<br>Bolseiro/Fellow",
               "Fellow_BI/COM_Proj2025/i3S/16112711/2026",
               "26.11.27",
           )}
