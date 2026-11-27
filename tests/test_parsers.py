@@ -21,6 +21,9 @@ ITEM = {"titulo": "Resolución de 6 de noviembre de 2026, de la Universidad de M
         "url_pdf": {"texto": "https://boe.es/x.pdf"}}
 
 
+ITEM_HTML_URL = "https://www.boe.es/diario_boe/txt.php?id=BOE-A-TEST"
+
+
 class BoeTests(unittest.TestCase):
     def test_splits_notice_into_areas_and_ignores_committee(self):
         with mock.patch.object(boe, "fetch", return_value=NOTICE):
@@ -43,6 +46,39 @@ class BoeTests(unittest.TestCase):
                      "Universidad de Salamanca", "Área Asistencial Categoría"]:
             self.assertFalse(boe._looks_like_area(junk), junk)
         self.assertTrue(boe._looks_like_area("Ingeniería de Sistemas y Automática"))
+
+
+class RobotsTests(unittest.TestCase):
+    def test_boe_notice_url_is_allowed_by_boe_robots(self):
+        """BOE disallows xml.php; we must read notices through txt.php (regression: 0 BOE items on GitHub)."""
+        from urllib.robotparser import RobotFileParser
+        rp = RobotFileParser()
+        rp.parse(["User-agent: *", "Disallow: /diario_boe/xml.php?", "Disallow: /diario_boe/txt.php?*lang=en"])
+        self.assertFalse(rp.can_fetch("AtalayaBot", "https://www.boe.es/diario_boe/xml.php?id=BOE-A-1"))
+        self.assertTrue(rp.can_fetch("AtalayaBot", ITEM_HTML_URL))
+        fetched = []
+        with mock.patch.object(boe, "fetch", side_effect=lambda url, **k: fetched.append(url) or NOTICE):
+            boe.parse_notice({**ITEM, "url_html": ITEM_HTML_URL}, dt.date(2026, 11, 16), "UNIVERSIDADES")
+        self.assertEqual(fetched, [ITEM_HTML_URL])
+
+
+class StoreTests(unittest.TestCase):
+    def test_latest_run_wins_regardless_of_where_it_ran(self):
+        """Regression: a laptop run stored in Madrid time looked 'newer' than a later GitHub run in UTC."""
+        import sqlite3, tempfile, os
+        from academic_offers import store
+        with tempfile.TemporaryDirectory() as d:
+            db = store.connect(os.path.join(d, "t.db"))
+            a = Offer(source="crg", kind="position", title="Postdoc A", url="u1")
+            b = Offer(source="crg", kind="position", title="Postdoc B", url="u2")
+            with mock.patch("academic_offers.store.dt") as m:
+                m.timezone, m.date = dt.timezone, dt.date
+                m.datetime.now.return_value = dt.datetime(2026, 11, 27, 10, 17, tzinfo=dt.timezone.utc)
+                store.save(db, {"crg": [a]}, dt.date(2026, 11, 27))
+                m.datetime.now.return_value = dt.datetime(2026, 11, 27, 11, 1, tzinfo=dt.timezone.utc)
+                store.save(db, {"crg": [a, b]}, dt.date(2026, 11, 27))
+            titles = {o["title"] for o in store.current(db, dt.date(2026, 11, 27))}
+            self.assertEqual(titles, {"Postdoc A", "Postdoc B"})
 
 
 class SpainTests(unittest.TestCase):

@@ -58,10 +58,10 @@ def scrape(db, today: dt.date, boe_days: int, only: set[str] | None) -> None:
 def build_site(db, today: dt.date, out: Path) -> int:
     rows = store.current(db, today)
     runs = store.last_runs(db)
-    status = [{"name": s.name, "run_at": runs.get(s.key, ("never", 0))[0].replace("T", " "),
+    status = [{"name": s.name, "run_at": runs.get(s.key, ("never", 0))[0].replace("T", " ").replace("Z", " UTC"),
                "n": runs.get(s.key, ("", 0))[1], "may_be_empty": s.may_be_empty} for s in SOURCES]
     env = Environment(loader=FileSystemLoader(ROOT / "templates"), autoescape=True)
-    generated = dt.datetime.now().strftime("%d %b %Y, %H:%M")
+    generated = dt.datetime.now(dt.timezone.utc).strftime("%d %b %Y, %H:%M UTC")
     repo = os.environ.get("GITHUB_REPOSITORY")
     repo_url = f"https://github.com/{repo}" if repo else "https://github.com/pacocp/atalaya"
 

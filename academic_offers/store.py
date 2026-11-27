@@ -33,12 +33,30 @@ def connect(path: str | Path) -> sqlite3.Connection:
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     db = sqlite3.connect(path)
     db.executescript(SCHEMA)
+    _migrate_local_times(db)
     return db
+
+
+# Runs recorded before timestamps were UTC, on the author's laptop (Madrid, UTC+1 in winter).
+# Converted once to UTC so they sort correctly against GitHub's runs.
+_LOCAL_RUNS = {"2026-11-27T11:17:09": "2026-11-27T10:17:09Z", "2026-11-27T11:23:28": "2026-11-27T10:23:28Z"}
+
+
+def _migrate_local_times(db: sqlite3.Connection) -> None:
+    for old, new in _LOCAL_RUNS.items():
+        db.execute("UPDATE runs SET run_at = ? WHERE run_at = ?", (new, old))
+        db.execute("UPDATE offers SET last_seen = ? WHERE last_seen = ?", (new, old))
+    # The other naive timestamps came from GitHub Actions, which already runs in UTC.
+    db.execute("UPDATE runs SET run_at = run_at || 'Z' WHERE run_at NOT LIKE '%Z'")
+    db.execute("UPDATE offers SET last_seen = last_seen || 'Z' WHERE last_seen NOT LIKE '%Z'")
+    db.commit()
 
 
 def save(db: sqlite3.Connection, results: dict[str, list[Offer]], today: dt.date) -> str:
     """`results` maps source key → offers, for the sources that ran successfully."""
-    t = dt.datetime.now().isoformat(timespec="seconds")
+    # Always UTC: runs happen both on GitHub (UTC) and on laptops (Madrid time), and "latest run"
+    # is decided by comparing these strings.
+    t = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     for source, offers in results.items():
         for o in offers:
             db.execute(

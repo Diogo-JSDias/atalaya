@@ -10,6 +10,8 @@ import logging
 import re
 from collections import Counter
 
+from bs4 import BeautifulSoup
+
 from .. import llm
 from ..http import fetch, fetch_bytes
 from ..models import Offer
@@ -53,9 +55,12 @@ DEADLINE = re.compile(
 )
 
 
-def _text(xml: str) -> str:
-    body = xml.split("<texto>", 1)[-1]
-    return " ".join(re.sub(r"<[^>]+>", " ", body).split())
+def _text(html: str) -> str:
+    """Full text of a notice from its HTML page (txt.php). BOE's robots.txt disallows xml.php, so we
+    read the HTML version, whose text sits in <div id="textoxslt">."""
+    soup = BeautifulSoup(html, "html.parser")
+    body = soup.find(id="textoxslt") or soup.find(id="DOdocText") or soup.body or soup
+    return " ".join(body.get_text(" ").split())
 
 
 def _category_before(text: str, pos: int, fallback: str, csic: bool) -> str:
@@ -97,7 +102,7 @@ def _deadline(text: str, published: dt.date, region: str = "") -> str | None:
 
 def parse_notice(item: dict, published: dt.date, department: str) -> list[Offer]:
     title = item["titulo"]
-    text = _text(fetch(item["url_xml"]))
+    text = _text(fetch(item["url_html"]))
     # The selection-committee annex repeats every area; only read the list of posts.
     posts_part = re.split(r"ANEXO I{1,2}\s*(?:Comisi|Composici|Tribunal)", text)[0]
     institution, region = university(title)

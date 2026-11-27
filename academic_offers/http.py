@@ -58,6 +58,7 @@ def _check(url: str) -> float:
     u = urlparse(url)
     rp = _robots_for(u.scheme, u.netloc)
     if rp is not None and not rp.can_fetch(BOT_NAME, url):
+        log.warning("robots.txt disallows %s; skipping", url)
         raise Disallowed(url)
     delay = (rp.crawl_delay(BOT_NAME) if rp else None) or DEFAULT_DELAY
     return max(float(delay), DEFAULT_DELAY)
