@@ -43,8 +43,12 @@
 
   <h2>Fontes e última recolha</h2>
   <table>
-    <tr><th>Fonte</th><th>Última execução</th><th>Entradas</th></tr>
-    {% for s in status %}<tr><td>{{ s.name }}</td><td>{{ s.run_at }}</td><td>{{ s.n }}{% if s.n == 0 and not s.may_be_empty %} ⚠️{% endif %}</td></tr>{% endfor %}
+    <thead>
+      <tr><th scope="col">Fonte</th><th scope="col">Última execução</th><th scope="col">Entradas</th></tr>
+    </thead>
+    <tbody>
+      {% for s in status %}<tr><td>{{ s.name }}</td><td>{{ s.run_at }}</td><td>{{ s.n }}{% if s.n == 0 and not s.may_be_empty %} ⚠️{% endif %}</td></tr>{% endfor %}
+    </tbody>
   </table>
 
   <h2>Para responsáveis por fontes</h2>

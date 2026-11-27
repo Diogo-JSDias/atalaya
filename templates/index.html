@@ -104,7 +104,7 @@
 </div>
 
 <footer>
-  <p>Atualizado em {{ generated }}. Cada oportunidade liga ao aviso original; confirma sempre as condições junto da entidade responsável. Prazos identificados como estimados são calculados a partir do texto do aviso e podem não refletir feriados locais. Entradas extraídas de anexos PDF por IA podem conter erros. <a href="about.html">Sobre o portal, fontes e dados</a> · <a href="offers.json">Dados JSON</a></p>
+  <p>Atualizado em {{ generated }}. Cada oportunidade liga ao aviso original; confirme sempre as condições junto da entidade responsável. Prazos identificados como estimados são calculados a partir do texto do aviso e podem não refletir feriados locais. Entradas extraídas de anexos PDF por IA podem conter erros. <a href="about.html">Sobre o portal, fontes e dados</a> · <a href="offers.json">Dados JSON</a></p>
   <p>Adaptação portuguesa do projeto aberto <a href="https://github.com/pacocp/atalaya">Atalaya</a>.</p>
   <p>Fontes:</p>
   <ul>{% for s in sources %}<li>{{ s }}</li>{% endfor %}</ul>
@@ -131,7 +131,7 @@ const subfieldFor = o => o.subfield || "Geral";
 
 function fillSelect(el, label, values, order, display = value => value) {
   const vals = [...new Set(values.filter(Boolean))];
-  vals.sort((a, b) => order ? (order.indexOf(a) - order.indexOf(b)) : a.localeCompare(b, "es"));
+  vals.sort((a, b) => order ? (order.indexOf(a) - order.indexOf(b)) : a.localeCompare(b, "pt-PT"));
   el.innerHTML = `<option value="">${label}</option>` + vals.map(v => `<option value="${esc(v)}">${esc(display(v))}</option>`).join("");
 }
 
@@ -145,7 +145,7 @@ function matches(o, ignoreField) {
   if (state.soon && !(o.deadline && days(o.deadline) <= 14)) return false;
   if (state.fresh && days(o.first_seen) < -7) return false;
   if (state.q) {
-    const hay = [o.title, o.area_raw, o.institution, o.field, o.subfield, o.stage, o.region, o.notes, o.position_type, o.extra && o.extra.fct_funding_type].join(" ").toLowerCase();
+    const hay = [o.title, o.area_raw, o.institution, o.field, fieldLabel(o.field), o.subfield, o.stage, stageLabel(o.stage), o.region, o.notes, o.position_type, o.extra && o.extra.fct_funding_type].join(" ").toLowerCase();
     if (!state.q.toLowerCase().split(/\s+/).every(w => hay.includes(w))) return false;
   }
   return true;
@@ -198,9 +198,12 @@ function init() {
   const positions = OFFERS.filter(o => o.kind === "position");
   const posts = positions.reduce((n, o) => n + (o.n_posts || 1), 0);
   const soon = OFFERS.filter(o => o.deadline && days(o.deadline) <= 14).length;
-  $("stats").innerHTML = [[posts, "vagas abertas"], [OFFERS.filter(o => o.kind === "call").length, "concursos"],
-    [new Set(OFFERS.map(o => o.institution)).size, "instituições"], [soon, "terminam em 14 dias"]]
-    .map(([n, l]) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`).join("");
+  $("stats").innerHTML = [
+    [posts, "vaga aberta", "vagas abertas"],
+    [OFFERS.filter(o => o.kind === "call").length, "concurso", "concursos"],
+    [new Set(OFFERS.map(o => o.institution)).size, "instituição", "instituições"],
+    [soon, "termina em 14 dias", "terminam em 14 dias"]
+  ].map(([n, s, p]) => `<div class="stat"><b>${n}</b><span>${n === 1 ? s : p}</span></div>`).join("");
   fillSelect($("stage"), "Todas as fases", OFFERS.map(o => o.stage), STAGE_ORDER, stageLabel);
   fillSelect($("subfield"), "Todas as subáreas", OFFERS.map(o => o.subfield));
   fillSelect($("region"), "Todas as regiões", OFFERS.map(o => o.region));
