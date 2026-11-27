@@ -113,15 +113,21 @@ def _deadline(text: str) -> str | None:
         candidates = _date_values(context)
         if not candidates:
             continue
+        label_start = label.start() - left
         label_end = label.end() - left
-        after = [value for offset, value in candidates if offset >= label_end]
+        after = [(offset, value) for offset, value in candidates if offset >= label_end]
+        before = [(offset, value) for offset, value in candidates if offset < label_start]
+        label_text = label.group(0).casefold()
+        is_submission_period = "submissão de candidaturas" in label_text or "prazo" in label_text and "submissão" in label_text
         if after:
-            # When a submission period is given as a range, its last date is the deadline.
-            return max(value for _, value in after).isoformat()
-        before = [value for offset, value in candidates if offset < label.start() - left]
+            # Submission labels often precede a start/end range. Use its second
+            # date as the closing date, and ignore later result dates nearby.
+            after.sort(key=lambda pair: pair[0])
+            selected = after[1][1] if is_submission_period and len(after) > 1 else after[0][1]
+            return selected.isoformat()
         if before:
-            # Some FCT pages place the date immediately before the "Encerramento" label.
-            return max(value for _, value in before).isoformat()
+            # Some FCT pages place the closing date immediately before its label.
+            return max(before, key=lambda pair: pair[0])[1].isoformat()
     return None
 
 
@@ -152,10 +158,7 @@ def _label_value(soup: BeautifulSoup, labels: set[str]) -> str:
 
 
 def _funding_type(title: str, labelled_value: str = "") -> str:
-    # Prefer the title: generic mentions in explanatory prose should not override it.
-    for pattern, category in FUNDING_TYPES:
-        if pattern.search(title):
-            return category
+    # An explicit taxonomy field is more reliable than clues in a title.
     if labelled_value:
         value = labelled_value.casefold()
         for pattern, category in FUNDING_TYPES:
@@ -163,6 +166,9 @@ def _funding_type(title: str, labelled_value: str = "") -> str:
                 return category
         if value in OTHER_FUNDING_TYPES:
             return "Outros"
+    for pattern, category in FUNDING_TYPES:
+        if pattern.search(title):
+            return category
     return ""
 
 
