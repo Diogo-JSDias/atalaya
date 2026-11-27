@@ -14,7 +14,7 @@ class PortugalEditionTests(unittest.TestCase):
     def test_only_portuguese_and_european_sources_are_active(self):
         self.assertEqual(
             {source.key for source in SOURCES},
-            {"dr", "fct", "ulisboa", "uporto", "ualg", "uc-apply", "uminho-eeg", "novafct-investigadores", "ubi-docentes", "gimm", "inl", "iscte", "lip", "ua-investigacao", "ua-docentes", "ua-tecnico", "ucp-clsbe", "eu-ft"},
+            {"dr", "fct", "ulisboa", "uporto", "ualg", "uc-apply", "uminho-eeg", "novafct-investigadores", "ubi-docentes", "ubi-investigadores", "nova-ims", "gimm", "inl", "iscte", "lip", "ua-investigacao", "ua-docentes", "ua-tecnico", "ucp-clsbe", "eu-ft"},
         )
 
     @patch("academic_offers.__main__.store.last_runs", return_value={})
@@ -31,6 +31,8 @@ class PortugalEditionTests(unittest.TestCase):
             {"source": "uminho-eeg", "id": "uminho-offer", "title": "Oferta UMinho EEG"},
             {"source": "novafct-investigadores", "id": "novafct-offer", "title": "Oferta NOVA FCT"},
             {"source": "ubi-docentes", "id": "ubi-offer", "title": "Oferta UBI"},
+            {"source": "ubi-investigadores", "id": "ubi-researcher-offer", "title": "Oferta UBI Investigador"},
+            {"source": "nova-ims", "id": "nova-ims-offer", "title": "Oferta NOVA IMS"},
             {"source": "gimm", "id": "gimm-offer", "title": "Oferta GIMM"},
             {"source": "inl", "id": "inl-offer", "title": "Oferta INL"},
             {"source": "iscte", "id": "iscte-offer", "title": "Oferta Iscte"},
@@ -44,10 +46,10 @@ class PortugalEditionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             count = build_site(object(), dt.date(2026, 11, 27), Path(tmp))
             rows = json.loads((Path(tmp) / "offers.json").read_text(encoding="utf-8"))
-        self.assertEqual(count, 18)
+        self.assertEqual(count, 20)
         self.assertEqual(
             {row["source"] for row in rows},
-            {"dr", "fct", "ulisboa", "uporto", "ualg", "uc-apply", "uminho-eeg", "novafct-investigadores", "ubi-docentes", "gimm", "inl", "iscte", "lip", "ua-investigacao", "ua-docentes", "ua-tecnico", "ucp-clsbe", "eu-ft"},
+            {"dr", "fct", "ulisboa", "uporto", "ualg", "uc-apply", "uminho-eeg", "novafct-investigadores", "ubi-docentes", "ubi-investigadores", "nova-ims", "gimm", "inl", "iscte", "lip", "ua-investigacao", "ua-docentes", "ua-tecnico", "ucp-clsbe", "eu-ft"},
         )
         self.assertFalse(any(row["id"] == "legacy-spanish" for row in rows))
 
