@@ -1,8 +1,9 @@
-"""Fundação para a Ciência e a Tecnologia (FCT): open calls index.
+"""Fundação para a Ciência e a Tecnologia (FCT): open calls index and detail pages.
 
-Only the official public "open" tab is consumed. The list is an index; each
-record links to the FCT notice/detail page. Dates are stored only when an
-explicit day/month/year deadline is present in the card text.
+Only the official public "open" tab and same-domain detail pages are consumed.
+Deadlines are stored only when a complete date is explicitly associated with a
+submission/closing label. The public listing is an index; the original notice
+remains the authoritative record.
 """
 from __future__ import annotations
 
@@ -19,24 +20,189 @@ from ..models import Offer
 log = logging.getLogger(__name__)
 
 FCT_OPEN = "https://www.fct.pt/concursos/?paged=1&tab=open"
-FCT_HOST = "www.fct.pt"
+FCT_HOSTS = {"www.fct.pt", "fct.pt"}
+MAX_LIST_PAGES = 5
+MAX_DETAIL_PAGES = 40
+
 DATE_DMY = re.compile(r"(?<!\d)(\d{1,2})[./-](\d{1,2})[./-](20\d{2})(?!\d)")
-DEADLINE_LABEL = re.compile(
-    r"(?:data\s+limite|prazo(?:\s+(?:de|para))?\s+candidaturas?|"
-    r"submiss[aã]o\s+de\s+candidaturas|candidaturas\s+até)\s*[:：–-]?\s*(.{0,100})",
+DATE_ISO = re.compile(r"(?<!\d)(20\d{2})-(\d{2})-(\d{2})(?!\d)")
+PT_MONTHS = {
+    "janeiro": 1, "jan": 1, "fevereiro": 2, "fev": 2,
+    "março": 3, "marco": 3, "mar": 3,
+    "abril": 4, "abr": 4, "maio": 5, "mai": 5,
+    "junho": 6, "jun": 6, "julho": 7, "jul": 7,
+    "agosto": 8, "ago": 8, "setembro": 9, "set": 9,
+    "outubro": 10, "out": 10, "novembro": 11, "nov": 11,
+    "dezembro": 12, "dez": 12,
+}
+MONTH_PATTERN = "|".join(sorted(PT_MONTHS, key=len, reverse=True))
+DATE_PT = re.compile(
+    rf"(?<!\d)(\d{{1,2}})\s+(?:de\s+)?({MONTH_PATTERN})\.?(?:\s+de)?\s+(20\d{{2}})(?!\d)",
     re.I,
 )
 
+# Labels which identify the closing side of the application window. "Abertura"
+# and publication dates are deliberately absent.
+DEADLINE_LABEL = re.compile(
+    r"data\s+limite|prazo(?:\s+(?:final|de|para))?\s+"
+    r"(?:candidaturas?|apresenta[cç][ãa]o|submiss[aã]o)|"
+    r"submiss[aã]o\s+de\s+candidaturas|"
+    r"encerramento\s+(?:das?|de)\s+candidaturas?|"
+    r"fecho\s+(?:das?|de)\s+candidaturas?|"
+    r"candidaturas?\s+at[eé]|fim\s+do\s+prazo",
+    re.I,
+)
+
+FUNDING_TYPES = (
+    (re.compile(r"emprego\s+cient[ií]fico|fct[- ]?tenure|contrata[cç][ãa]o\s+de\s+investigadores", re.I),
+     "Emprego científico"),
+    (re.compile(r"bolsa(?:s)?(?:\s+de\s+investiga[cç][ãa]o|\s+de\s+doutoramento)?", re.I),
+     "Bolsas"),
+    (re.compile(r"projetos?\s+(?:de\s+)?i\s*&\s*d|projetos?\s+de\s+investiga[cç][ãa]o|projetos?\s+explorat[oó]rios", re.I),
+     "Projetos I&D"),
+    (re.compile(r"institui[cç][õo]es?\s+i\s*&\s*d", re.I), "Instituições I&D"),
+    (re.compile(r"infraestruturas?|computa[cç][ãa]o\s+avan[cç]ada", re.I), "Infraestruturas"),
+    (re.compile(r"pr[eé]mios?", re.I), "Prémios"),
+    (re.compile(r"internacional|parceria\s+europeia|coopera[cç][ãa]o\s+bilateral", re.I), "Internacional"),
+)
+OTHER_FUNDING_TYPES = {"outros", "other"}
+
+SCIENTIFIC_DOMAINS = (
+    "Ciências Agrárias",
+    "Ciências da Engenharia e Tecnologias",
+    "Ciências Exatas",
+    "Humanidades",
+    "Ciências Médicas e da Saúde",
+    "Ciências Naturais",
+    "Ciências Sociais",
+)
+
+
+def _normalise_text(value: str) -> str:
+    return " ".join(value.split()).strip(" :：\\t\\n")
+
+
+def _date_values(text: str) -> list[tuple[int, dt.date]]:
+    """Return date tokens with their offsets, ignoring impossible calendar dates."""
+    found: list[tuple[int, dt.date]] = []
+    for pattern, order in ((DATE_DMY, "dmy"), (DATE_ISO, "iso"), (DATE_PT, "pt")):
+        for match in pattern.finditer(text):
+            try:
+                if order == "dmy":
+                    day, month, year = (int(value) for value in match.groups())
+                elif order == "iso":
+                    year, month, day = (int(value) for value in match.groups())
+                else:
+                    day, month, year = int(match.group(1)), PT_MONTHS[match.group(2).lower()], int(match.group(3))
+                found.append((match.start(), dt.date(year, month, day)))
+            except (TypeError, ValueError):
+                continue
+    # Patterns do not normally overlap, but keep one value per date offset.
+    unique: dict[tuple[int, str], dt.date] = {}
+    for offset, value in found:
+        unique[(offset, value.isoformat())] = value
+    return sorted((offset, value) for (offset, _), value in unique.items())
+
 
 def _deadline(text: str) -> str | None:
-    """Return a full numeric date only when it is attached to a deadline label."""
+    """Extract a full date only from a small context around an explicit closing label."""
     for label in DEADLINE_LABEL.finditer(text):
-        for day, month, year in DATE_DMY.findall(label.group(1)):
-            try:
-                return dt.date(int(year), int(month), int(day)).isoformat()
-            except ValueError:
-                continue
+        left = max(0, label.start() - 100)
+        right = min(len(text), label.end() + 140)
+        context = text[left:right]
+        candidates = _date_values(context)
+        if not candidates:
+            continue
+        label_end = label.end() - left
+        after = [value for offset, value in candidates if offset >= label_end]
+        if after:
+            # When a submission period is given as a range, its last date is the deadline.
+            return max(value for _, value in after).isoformat()
+        before = [value for offset, value in candidates if offset < label.start() - left]
+        if before:
+            # Some FCT pages place the date immediately before the "Encerramento" label.
+            return max(value for _, value in before).isoformat()
     return None
+
+
+def _label_value(soup: BeautifulSoup, labels: set[str]) -> str:
+    """Read values only from explicit label/value structures (dt/dd, th/td, etc.)."""
+    wanted = {label.casefold() for label in labels}
+    for node in soup.find_all(["dt", "th", "strong", "b", "label"]):
+        label = _normalise_text(node.get_text(" ", strip=True)).casefold()
+        if label not in wanted:
+            continue
+        sibling_names = ["dd"] if node.name == "dt" else ["td"] if node.name == "th" else []
+        value_node = node.find_next_sibling(sibling_names) if sibling_names else None
+        if value_node:
+            value = _normalise_text(value_node.get_text(" ", strip=True))
+            if value:
+                return value
+        # A bold label is sometimes followed by plain text in the same paragraph.
+        pieces: list[str] = []
+        for sibling in node.next_siblings:
+            if getattr(sibling, "name", None) in {"strong", "b", "dt", "th"}:
+                break
+            value = sibling.get_text(" ", strip=True) if getattr(sibling, "get_text", None) else str(sibling)
+            if value.strip():
+                pieces.append(value.strip())
+        if pieces:
+            return _normalise_text(" ".join(pieces))
+    return ""
+
+
+def _funding_type(title: str, body: str, labelled_value: str = "") -> str:
+    # Prefer the title: generic mentions in explanatory prose should not override it.
+    for pattern, category in FUNDING_TYPES:
+        if pattern.search(title):
+            return category
+    if labelled_value:
+        value = labelled_value.casefold()
+        for pattern, category in FUNDING_TYPES:
+            if pattern.search(labelled_value):
+                return category
+        if value in OTHER_FUNDING_TYPES:
+            return "Outros"
+    # Only use a small leading portion of body text as a fallback, not arbitrary
+    # references to programmes buried in the eligibility/legal sections.
+    lead = body[:500]
+    for pattern, category in FUNDING_TYPES:
+        if pattern.search(lead):
+            return category
+    return ""
+
+
+def _scientific_domain(labelled_value: str) -> str:
+    value = labelled_value.casefold()
+    for domain in SCIENTIFIC_DOMAINS:
+        if domain.casefold() in value:
+            return domain
+    if "todos os domínios científicos" in value:
+        return "Todos os domínios científicos"
+    return ""
+
+
+def parse_detail_page(html: str, title: str = "") -> dict[str, str | None]:
+    """Extract explicit metadata from an individual FCT call page."""
+    soup = BeautifulSoup(html, "html.parser")
+    for node in soup(["script", "style", "noscript", "nav", "footer"]):
+        node.decompose()
+    body = " ".join(soup.get_text(" ", strip=True).split())
+    funding_label = _label_value(soup, {"tipo de financiamento", "tipo de apoio", "tipologia de financiamento"})
+    domain_label = _label_value(soup, {"domínio científico", "domínios científicos", "área científica"})
+    return {
+        "deadline": _deadline(body),
+        "funding_type": _funding_type(title, body, funding_label) or None,
+        "scientific_domain": _scientific_domain(domain_label) or None,
+    }
+
+
+def _same_fct_host(url: str) -> bool:
+    parsed = urlparse(url)
+    return (
+        parsed.scheme in {"http", "https"}
+        and parsed.netloc.lower() in FCT_HOSTS
+    )
 
 
 def parse_open_listing(html: str, base_url: str = FCT_OPEN) -> list[Offer]:
@@ -47,14 +213,13 @@ def parse_open_listing(html: str, base_url: str = FCT_OPEN) -> list[Offer]:
     seen: set[str] = set()
 
     for a in main.select("a[href]"):
-        title = " ".join(a.get_text(" ", strip=True).split())
+        title = _normalise_text(a.get_text(" ", strip=True))
         if len(title) < 12:
             continue
         url = urljoin(base_url, a["href"])
-        parsed = urlparse(url)
-        if parsed.scheme not in {"http", "https"} or parsed.netloc.lower() not in {FCT_HOST, "fct.pt"}:
+        if not _same_fct_host(url):
             continue
-        if url.rstrip("/") in { "https://www.fct.pt/concursos", "https://fct.pt/concursos" }:
+        if url.rstrip("/") in {"https://www.fct.pt/concursos", "https://fct.pt/concursos"}:
             continue
         if url in seen:
             continue
@@ -73,10 +238,7 @@ def parse_open_listing(html: str, base_url: str = FCT_OPEN) -> list[Offer]:
                 r"\b(card|item|call|contest|opportunit|entry)\b", classes, re.I
             ):
                 break
-        card_text = " ".join(card.get_text(" ", strip=True).split())
-        if not card_text:
-            card_text = title
-        # Avoid navigation/footer links even if their labels happen to be long.
+        card_text = _normalise_text(card.get_text(" ", strip=True)) or title
         if not re.search(r"\b(data limite|candidaturas|concurso|bolsa|emprego científico|investiga)", card_text, re.I):
             continue
 
@@ -92,12 +254,32 @@ def parse_open_listing(html: str, base_url: str = FCT_OPEN) -> list[Offer]:
     return offers
 
 
+def _enrich_offer(offer: Offer) -> Offer:
+    """Enrich an index record from its official FCT detail page, failing safely."""
+    if not _same_fct_host(offer.url):
+        return offer
+    try:
+        details = parse_detail_page(fetch(offer.url), offer.title)
+    except Exception as exc:
+        log.info("FCT detail page unavailable for %s: %s", offer.url, exc)
+        return offer
+
+    if details["deadline"]:
+        offer.deadline = str(details["deadline"])
+        offer.deadline_estimated = False
+    if details["funding_type"]:
+        offer.extra["fct_funding_type"] = str(details["funding_type"])
+    if details["scientific_domain"]:
+        offer.area_raw = str(details["scientific_domain"])
+        offer.extra["fct_scientific_domain"] = str(details["scientific_domain"])
+    offer.extra["detail_enriched"] = True
+    return offer
+
+
 def scrape(today: dt.date | None = None) -> list[Offer]:
     offers: list[Offer] = []
     seen: set[str] = set()
-    # The public listing uses a paged query parameter. Stop at the first empty
-    # page and cap requests so a changed pagination control cannot cause a crawl.
-    for page in range(1, 6):
+    for page in range(1, MAX_LIST_PAGES + 1):
         page_url = FCT_OPEN.replace("paged=1", "paged=" + str(page))
         page_offers = parse_open_listing(fetch(page_url), page_url)
         if not page_offers:
@@ -106,5 +288,12 @@ def scrape(today: dt.date | None = None) -> list[Offer]:
             if offer.url not in seen:
                 seen.add(offer.url)
                 offers.append(offer)
-    log.info("FCT open calls: %d candidate records", len(offers))
+
+    # Bound detail requests and preserve the index record if any page is blocked,
+    # unavailable, or changes layout. The shared HTTP client enforces robots.txt,
+    # caching and per-host delays.
+    for offer in offers[:MAX_DETAIL_PAGES]:
+        _enrich_offer(offer)
+    log.info("FCT open calls: %d candidate records (%d detail pages attempted)",
+             len(offers), min(len(offers), MAX_DETAIL_PAGES))
     return offers
