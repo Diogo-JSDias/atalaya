@@ -15,6 +15,7 @@ from urllib.parse import urljoin, urlparse
 from bs4 import BeautifulSoup
 from pypdf import PdfReader
 
+from ..dates import lisbon_working_day_deadline
 from ..http import fetch, fetch_bytes
 from ..models import Offer
 
@@ -94,55 +95,9 @@ def _date_tokens(text: str) -> list[dt.date]:
     return [value for (_, _), value in sorted(deduplicated.items(), key=lambda item: item[0][0])]
 
 
-def _easter_sunday(year: int) -> dt.date:
-    """Gregorian Easter date (Meeus/Jones/Butcher algorithm)."""
-    a = year % 19
-    b, c = divmod(year, 100)
-    d, e = divmod(b, 4)
-    f = (b + 8) // 25
-    g = (b - f + 1) // 3
-    h = (19 * a + b - d - g + 15) % 30
-    i, k = divmod(c, 4)
-    l = (32 + 2 * e + 2 * i - h - k) % 7
-    m = (a + 11 * h + 22 * l) // 451
-    month = (h + l - 7 * m + 114) // 31
-    day = ((h + l - 7 * m + 114) % 31) + 1
-    return dt.date(year, month, day)
-
-
-def _portuguese_holidays(year: int) -> set[dt.date]:
-    easter = _easter_sunday(year)
-    # National public holidays plus Lisbon municipal holiday (NOVA IMS campus).
-    return {
-        dt.date(year, 1, 1),                    # Ano Novo
-        easter - dt.timedelta(days=2),          # Sexta-feira Santa
-        easter + dt.timedelta(days=60),         # Corpo de Deus
-        dt.date(year, 4, 25),
-        dt.date(year, 5, 1),
-        dt.date(year, 6, 10),
-        dt.date(year, 6, 13),                   # Santo António, Lisboa
-        dt.date(year, 8, 15),
-        dt.date(year, 10, 5),
-        dt.date(year, 11, 1),
-        dt.date(year, 12, 1),
-        dt.date(year, 12, 8),
-        dt.date(year, 12, 25),
-    }
-
-
 def _add_business_days(first_day: dt.date, days: int) -> dt.date:
-    """Add Portuguese working days, including national and Lisbon public holidays."""
-    current = first_day
-    added = 0
-    holiday_cache: dict[int, set[dt.date]] = {}
-    while added < days:
-        if current.year not in holiday_cache:
-            holiday_cache[current.year] = _portuguese_holidays(current.year)
-        if current.weekday() < 5 and current not in holiday_cache[current.year]:
-            added += 1
-        if added < days:
-            current += dt.timedelta(days=1)
-    return current
+    """Compatibility wrapper around the shared Lisbon holiday calendar."""
+    return lisbon_working_day_deadline(first_day, days)
 
 
 def parse_notice_text(text: str) -> dict[str, str | None]:

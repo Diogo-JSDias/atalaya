@@ -45,6 +45,7 @@ O GitHub Pages num plano gratuito exige um repositório público.
 | `ubi-docentes` | Universidade da Beira Interior | Concursos para pessoal docente em candidatura aberta. |
 | `ubi-investigadores` | Universidade da Beira Interior | Concursos para pessoal investigador; parser separado e sem vagas atuais na secção aberta na data de integração. |
 | `nova-ims` | NOVA IMS | Bolsas e recrutamento docente; lê os editais PDF para extrair prazos explícitos ou calcular prazos em dias úteis quando o edital os define. |
+| `nova-fcsh` | NOVA FCSH | Concursos para investigadores; usa avisos-extrato oficiais do Diário da República e só apresenta concursos com prazo legal futuro calculável. |
 | `ua-investigacao`, `ua-docentes`, `ua-tecnico` | Universidade de Aveiro | Concursos de pessoal investigador e docente, mais o portal JobsUA para pessoal técnico, administrativo e de gestão. |
 | `iscte` | Iscte | Portal de concursos docentes, técnicos, investigação e bolsas; inclui a Associação Iscte Conhecimento e Inovação. |
 | `ucp-clsbe` | Universidade Católica Portuguesa – Católica-Lisbon | Oportunidades de docência, investigadores doutorados e bolsas publicadas pela CLSBE; não representa todas as escolas da UCP. |
@@ -52,7 +53,7 @@ O GitHub Pages num plano gratuito exige um repositório público.
 | `inl` | INL | Portal Jobvite oficial de posições abertas. |
 | `lip` | LIP | Portal oficial de candidaturas; só concursos com estado explicitamente aberto. |
 
-As vagas da edição de 27/11/2026 incluem novas fontes para Aveiro, Iscte, Católica-Lisbon, GIMM, INL e LIP; a segunda vaga acrescenta os concursos de investigadores da UBI e o portal de recrutamento da NOVA IMS. A cobertura da UCP continua limitada à Católica-Lisbon. O portal de recrutamento da Fundação Champalimaud é carregado dinamicamente e requer uma integração específica; LASI é uma rede de unidades associadas sem um portal único de contratação, pelo que as vagas devem ser recolhidas nas instituições empregadoras participantes. Estas duas fontes permanecem por integrar, não sendo substituídas por feeds presumidos.
+As vagas da edição de 27/11/2026 incluem novas fontes para Aveiro, Iscte, Católica-Lisbon, GIMM, INL e LIP; a segunda vaga acrescenta os concursos de investigadores da UBI e o portal de recrutamento da NOVA IMS; a terceira acrescenta os concursos da NOVA FCSH e centraliza o cálculo de prazos úteis de Lisboa. A cobertura da UCP continua limitada à Católica-Lisbon. O portal de recrutamento da Fundação Champalimaud é carregado dinamicamente e requer uma integração específica; LASI é uma rede de unidades associadas sem um portal único de contratação, pelo que as vagas devem ser recolhidas nas instituições empregadoras participantes. Estas duas fontes permanecem por integrar, não sendo substituídas por feeds presumidos.
 
 As fontes portuguesas estão numa fase de validação. Confirma sempre os requisitos e prazos no aviso original. A BEP permanece desligada enquanto não existir acesso automatizado autorizado e estável.
 

@@ -45,3 +45,59 @@ def date_after(text: str, keywords: str, window: int = 160) -> str | None:
         if d:
             return d
     return None
+
+def _easter_sunday(year: int) -> dt.date:
+    """Gregorian Easter date (Meeus/Jones/Butcher algorithm)."""
+    a = year % 19
+    b, c = divmod(year, 100)
+    d, e = divmod(b, 4)
+    f = (b + 8) // 25
+    g = (b - f + 1) // 3
+    h = (19 * a + b - d - g + 15) % 30
+    i, k = divmod(c, 4)
+    l = (32 + 2 * e + 2 * i - h - k) % 7
+    m = (a + 11 * h + 22 * l) // 451
+    month = (h + l - 7 * m + 114) // 31
+    day = ((h + l - 7 * m + 114) % 31) + 1
+    return dt.date(year, month, day)
+
+
+def lisbon_working_day_deadline(first_day: dt.date, days: int) -> dt.date:
+    """Count Portuguese working days in Lisbon, including national and municipal holidays.
+
+    first_day is the first day counted by the legal notice. The function
+    counts that date when it is a weekday and not a public holiday.
+    """
+    if days < 1:
+        raise ValueError("days must be at least one")
+
+    current = first_day
+    added = 0
+    holiday_cache: dict[int, set[dt.date]] = {}
+
+    while added < days:
+        if current.year not in holiday_cache:
+            easter = _easter_sunday(current.year)
+            holiday_cache[current.year] = {
+                dt.date(current.year, 1, 1),
+                easter - dt.timedelta(days=2),   # Good Friday
+                easter + dt.timedelta(days=60),  # Corpus Christi
+                dt.date(current.year, 4, 25),
+                dt.date(current.year, 5, 1),
+                dt.date(current.year, 6, 10),
+                dt.date(current.year, 6, 13),     # Lisbon municipal holiday
+                dt.date(current.year, 8, 15),
+                dt.date(current.year, 10, 5),
+                dt.date(current.year, 11, 1),
+                dt.date(current.year, 12, 1),
+                dt.date(current.year, 12, 8),
+                dt.date(current.year, 12, 25),
+            }
+
+        if current.weekday() < 5 and current not in holiday_cache[current.year]:
+            added += 1
+        if added < days:
+            current += dt.timedelta(days=1)
+
+    return current
+
