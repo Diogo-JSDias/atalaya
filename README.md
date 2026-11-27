@@ -54,6 +54,9 @@ O GitHub Pages num plano gratuito exige um repositório público.
 | `ucp-clsbe` | Universidade Católica Portuguesa – Católica-Lisbon | Oportunidades de docência, investigadores doutorados e bolsas publicadas pela CLSBE; não representa todas as escolas da UCP. |
 | `ucp-porto` | Universidade Católica Portuguesa – Centro Regional do Porto | Concursos de recrutamento docente e de investigação; analisa a página oficial de oportunidades do Porto. |
 | `ucp-fch` | Universidade Católica Portuguesa – Faculdade de Ciências Humanas | Concursos de recrutamento docente e de investigação; analisa a página oficial de oportunidades da FCH. |
+| `lasige` | LASIGE – FCUL/ULisboa | Página oficial de posições; extrai períodos de candidatura e ignora anúncios arquivados cuja data final já passou. |
+| `ipleiria` | Universidade de Leiria e Oeste (ex-IPLeiria) | Concursos abertos de bolsas de I&D+i, com link direto para a plataforma de candidatura; a bolsa de docentes permanente não é tratada como vaga concreta. |
+| `ips` | Universidade Politécnica de Setúbal (UNIPS; antigo IPS) | Portal central de candidaturas abertas, com avisos e registos BEP; não confunde concursos em fase de avaliação com candidaturas abertas. |
 | `gimm` | GIMM | Página oficial de oportunidades abertas do instituto. |
 | `inl` | INL | Portal Jobvite oficial de posições abertas. |
 | `lip` | LIP | Portal oficial de candidaturas; só concursos com estado explicitamente aberto. |
