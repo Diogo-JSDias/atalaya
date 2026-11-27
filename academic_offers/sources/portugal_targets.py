@@ -27,6 +27,7 @@ ISCTE_KNOWLEDGE_URL = "https://recrutamento.conhecimentoinovacao.iscte-iul.pt/jo
 LIP_URL = "https://candidaturas.lip.pt/calls/current_calls"
 UA_RESEARCH_URL = "https://www.ua.pt/pt/sgrh/pessoal-investigador-novos-concursos-e-ofertas"
 UA_TEACHING_URL = "https://www.ua.pt/pt/sgrh/pessoal-docente-novos-concursos-e-ofertas"
+UA_TAG_URL = "https://jobs.ua.pt/"
 UCP_CLSBE_URL = "https://clsbe.lisboa.ucp.pt/pt-pt/investigacao/posicoes-investigacao"
 
 CLOSED = re.compile(
@@ -157,21 +158,35 @@ def iscte(today: dt.date | None = None) -> list[Offer]:
 
 
 def lip(today: dt.date | None = None) -> list[Offer]:
+    """The public 'current calls' route resolves to the currently featured open call."""
     today = today or dt.date.today()
-    offers = parse_link_board(
-        fetch(LIP_URL), base_url=LIP_URL, source="lip",
+    html = fetch(LIP_URL)
+    soup = BeautifulSoup(html, "html.parser")
+    text = _clean(soup.get_text(" ", strip=True))
+    heading = soup.find("h1")
+    title = _clean(heading.get_text(" ", strip=True)) if heading else ""
+    if not title or not re.search(r"\\bopen\\b|\\baberto\\b|\\ba decorrer\\b", text, re.I):
+        return []
+    if CLOSED.search(text):
+        return []
+    deadline = date_after(text, DEADLINE)
+    if deadline and deadline < today.isoformat():
+        return []
+    return [Offer(
+        source="lip", kind="position", title=title, url=LIP_URL,
         institution="LIP – Laboratório de Instrumentação e Física Experimental de Partículas",
-        region="Portugal", href_pattern=r"/calls/call/\d+",
-        domains=("lip.pt",), open_listing=True, require_open_marker=True,
-    )
-    return [o for o in offers if not o.deadline or o.deadline >= today.isoformat()]
+        region="Portugal", position_type="Recrutamento científico",
+        deadline=deadline,
+        notes="Prazo não identificado na página pública; consultar o aviso oficial." if not deadline else "",
+        extra={"listing_url": LIP_URL},
+    )]
 
 
 def _ua_board(url: str, source: str, today: dt.date) -> list[Offer]:
     offers = parse_link_board(
         fetch(url), base_url=url, source=source,
         institution="Universidade de Aveiro", region="Aveiro",
-        href_pattern=r"(?:jobs\\.ua\\.pt/Home/Detail/\\d+|api-portal\\.ua\\.pt/api/v1/file/\\d+)",
+        href_pattern=r"(?:jobs\.ua\.pt/Home/Detail/\d+|api-portal\.ua\.pt/api/v1/file/\d+)",
         domains=("ua.pt",), open_listing=False,
     )
     return [o for o in offers if not o.deadline or o.deadline >= today.isoformat()]
@@ -183,6 +198,16 @@ def ua_research(today: dt.date | None = None) -> list[Offer]:
 
 def ua_teaching(today: dt.date | None = None) -> list[Offer]:
     return _ua_board(UA_TEACHING_URL, "ua-docentes", today or dt.date.today())
+
+
+def ua_technical(today: dt.date | None = None) -> list[Offer]:
+    today = today or dt.date.today()
+    offers = parse_link_board(
+        fetch(UA_TAG_URL), base_url=UA_TAG_URL, source="ua-tecnico",
+        institution="Universidade de Aveiro", region="Aveiro",
+        href_pattern=r"/Home/Detail/\d+", domains=("ua.pt",),
+    )
+    return [o for o in offers if not o.deadline or o.deadline >= today.isoformat()]
 
 
 def uc_portuguesa(today: dt.date | None = None) -> list[Offer]:
