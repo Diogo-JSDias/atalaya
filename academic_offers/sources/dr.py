@@ -17,7 +17,8 @@ from ..models import Offer
 
 log = logging.getLogger(__name__)
 
-# Official "2.ª Série — Todas as partes — HTML" RSS link, as listed on the DR RSS page.\n# RSS is used as an index only; the original notice remains the authoritative record.
+# Official "2.ª Série — Todas as partes — HTML" RSS link, as listed on the DR RSS page.
+# RSS is used as an index only; the original notice remains the authoritative record.
 RSS_URL = "https://files.diariodarepublica.pt/rss/serie2-html.xml"
 
 # Deliberately broad at first: titles vary between institutions and notice types.
@@ -58,7 +59,11 @@ def _published(value: str) -> str | None:
         parsed = email.utils.parsedate_to_datetime(value)
         return parsed.date().isoformat()
     except (TypeError, ValueError, OverflowError):
-        return None
+        try:
+            # Atom feeds commonly use ISO 8601 timestamps rather than RFC 2822.
+            return dt.datetime.fromisoformat(value.replace("Z", "+00:00")).date().isoformat()
+        except (TypeError, ValueError, OverflowError):
+            return None
 
 
 def parse_feed(xml_text: str, today: dt.date | None = None) -> list[Offer]:
@@ -79,13 +84,15 @@ def parse_feed(xml_text: str, today: dt.date | None = None) -> list[Offer]:
         if not title or not RECRUITMENT.search(title) or NOT_NEW.search(title):
             continue
 
-        url = _child_text(item, "link", "guid", "id")
-        # Atom uses href attribute on link instead of element text.
-        if not url:
-            for child in item.iter():
-                if _local_name(child.tag) == "link" and child.attrib.get("href"):
-                    url = child.attrib["href"]
+        # Atom links normally carry href in an attribute; RSS links carry text.
+        url = ""
+        for child in item.iter():
+            if _local_name(child.tag) == "link":
+                url = (child.attrib.get("href") or (child.text or "")).strip()
+                if url:
                     break
+        if not url:
+            url = _child_text(item, "guid", "id")
         if not url.startswith(("https://", "http://")) or url in seen:
             continue
         seen.add(url)
