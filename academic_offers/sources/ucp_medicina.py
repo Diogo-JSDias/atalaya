@@ -103,26 +103,14 @@ def _is_ongoing(anchor) -> bool:
 
 
 def _title(anchor) -> str:
-    title_pattern = re.compile(
-        r"(?:Concurso\\s+de\\s+Recrutamento|Recruitment\\s+for\\s+the\\s+position)",
-        re.I,
-    )
-    for previous in anchor.find_all_previous(string=True):
-        value = _clean(str(previous)).strip(" •:-")
+    for previous in anchor.find_all_previous(["h2", "h3", "h4", "p", "li", "div"]):
+        value = _clean(previous.get_text(" ", strip=True)).strip(" •:-")
         if not value:
             continue
-        if value.casefold() in {"a decorrer", "terminados"}:
+        normal = value.casefold()
+        if normal in {"a decorrer", "terminados", "concursos"}:
             break
-        if NOTICE_LINK.fullmatch(value):
-            continue
-        if title_pattern.search(value):
-            return value
-
-    parent = anchor.find_parent(["li", "p", "div"])
-    if parent:
-        value = _clean(parent.get_text(" ", strip=True))
-        value = NOTICE_LINK.sub("", value).strip(" •:-")
-        if value and title_pattern.search(value):
+        if "professor" in normal or "investigador" in normal or "recruitment" in normal:
             return value
     return "Concurso docente – Faculdade de Medicina"
 
