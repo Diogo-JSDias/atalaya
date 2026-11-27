@@ -207,7 +207,7 @@ def uc_portuguesa(today: dt.date | None = None) -> list[Offer]:
         url = urljoin(UCP_CLSBE_URL, link["href"])
         if not _allowed_host(url, ("ucp.pt",)) or url in seen:
             continue
-        deadline = date_after(row_text, DEADLINE) or first_date(row_text)
+        deadline = first_date(_clean(cells[-2].get_text(" ", strip=True)))
         if deadline and deadline < today.isoformat():
             continue
         seen.add(url)
