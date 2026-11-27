@@ -236,7 +236,7 @@ def uc_portuguesa(today: dt.date | None = None) -> list[Offer]:
         if len(cells) < 3 or any(c.name == "th" for c in cells):
             continue
         row_text = _clean(row.get_text(" ", strip=True))
-        if CLOSED.search(row_text) or re.search(r"fechado", row_text, re.I):
+        if CLOSED.search(row_text) or re.search(r"fechado", row_text, re.I) or not OPEN.search(row_text):
             continue
         link = row.find("a", href=True)
         if not link:
