@@ -16,6 +16,9 @@
   td, th { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
   th { color: var(--muted); font-weight: 500; }
   .muted { color: var(--muted); }
+  .author { border: 1px solid var(--line); border-radius: 10px; padding: 4px 20px 8px; margin-top: 28px; }
+  .author h2 { margin-top: 16px; }
+  .links { font-size: 15px; }
 </style>
 </head>
 <body>
@@ -23,6 +26,20 @@
   <p><a href="./">← Back to the offers</a></p>
   <h1>About Atalaya</h1>
   <p class="muted">An <em>atalaya</em> is a watchtower: one lookout over academic posts and research funding across Spain.</p>
+
+  <section class="author" aria-labelledby="who">
+    <h2 id="who">Who made it</h2>
+    <p>Atalaya is built and maintained by
+       <a href="https://pacocp.es">Francisco (Paco) Carrillo-Pérez</a>, a machine-learning researcher working on
+       AI for cancer research. Paco did his Ph.D. at the University of Granada and was a Fulbright Scholar and
+       postdoctoral researcher at Stanford University.</p>
+    <p>He built Atalaya as a personal, non-commercial side project: the information about academic jobs in Spain
+       is public, but it's spread across dozens of bulletins and websites. Atalaya gathers it in one place.</p>
+    <p class="links"><a href="https://pacocp.es">pacocp.es</a> · <a href="https://github.com/pacocp">GitHub</a> ·
+       <a href="https://scholar.google.com/citations?user=KqHbnTkAAAAJ">Google Scholar</a> ·
+       <a href="https://www.linkedin.com/in/franciscocp/">LinkedIn</a></p>
+    <p class="muted">Found a mistake or a missing source? <a href="{{ repo_url }}/issues">Open an issue</a>.</p>
+  </section>
 
   <h2>What it does</h2>
   <p>Once a day, Atalaya reads official bulletins, funders and institutional job boards, extracts the open

@@ -63,7 +63,7 @@ def build_site(db, today: dt.date, out: Path) -> int:
     env = Environment(loader=FileSystemLoader(ROOT / "templates"), autoescape=True)
     generated = dt.datetime.now().strftime("%d %b %Y, %H:%M")
     repo = os.environ.get("GITHUB_REPOSITORY")
-    repo_url = f"https://github.com/{repo}" if repo else SITE_URL
+    repo_url = f"https://github.com/{repo}" if repo else "https://github.com/pacocp/atalaya"
 
     out.mkdir(parents=True, exist_ok=True)
     data = json.dumps(rows, ensure_ascii=False).replace("</", "<\\/")

@@ -76,6 +76,14 @@ class DateTests(unittest.TestCase):
                          "2026-12-10")
 
 
+class CsicTests(unittest.TestCase):
+    def test_window_rule_becomes_deadline(self):
+        from academic_offers.sources import csic
+        # 10 días hábiles from 22 Oct 2026 in Madrid: 23,26,27,28,29,30 Oct, 2,3,4,5 Nov (1 Nov is a Sunday)
+        self.assertEqual(csic._deadline("10 días hábiles a partir del siguiente al 22-10-2026"), "2026-11-05")
+        self.assertEqual(csic._deadline("Hasta el 15/12/2026"), "2026-12-15")
+
+
 class ClassifyTests(unittest.TestCase):
     def check(self, area, field, sub):
         o = classify(Offer(source="t", kind="position", title=f"Plaza – {area}", url="u", area_raw=area))

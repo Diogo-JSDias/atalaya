@@ -60,7 +60,7 @@ def classify(o: Offer) -> Offer:
         o.field, o.subfield = "Multidisciplinary / other", ("Funding calls" if o.kind == "call" else "")
 
     stage_text = f"{o.position_type} {o.title}"
-    o.stage = next((s for pat, s in _STAGES if pat.search(stage_text)), "")
+    o.stage = o.stage or next((s for pat, s in _STAGES if pat.search(stage_text)), "")  # keep a stage the source gave
     if not o.stage:
         o.stage = "Funding call (various stages)" if o.kind == "call" else "Other"
     return o

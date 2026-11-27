@@ -1,6 +1,7 @@
 # Atalaya: plazas académicas en España
 
 *Atalaya* (Spanish for "watchtower"): one lookout over academic posts and research funding across Spain.
+Made by [Paco Carrillo-Pérez](https://pacocp.es) as a non-commercial side project.
 
 Every day Atalaya collects open faculty posts, research jobs and funding calls from official bulletins,
 funders, research centres and universities, classifies them by field and career stage, and publishes a
@@ -40,12 +41,12 @@ GitHub Pages on a free account needs a public repository.
 | `eu-ft` | EU Funding & Tenders API | MSCA and ERC calls |
 | `aei` | Agencia Estatal de Investigación | Open national calls (RYC, JdC, FPU…), deadline from the call page |
 | `ikerbasque`, `icrea` | Regional funders | Closed calls dropped; ICREA shown as "upcoming" between calls |
+| `csic` | CSIC Sede electrónica, "Convocatorias de personal" | Research calls still accepting applications (predoc, postdoc, research staff, technicians); deadline worked out from "N días hábiles a partir del…". Internal civil-service postings are skipped. The "Bolsa de trabajo" app needs a login, so it isn't used. |
 | `cnic`, `icfo`, `crg`, `cnio`, `irb` | Research centres' job boards | Deadlines read from each job page |
 | `uni:*` | University pages (UCM, UGR, UC3M) | Contracted faculty: Ayudante Doctor, Permanente Laboral, Asociado. Add more in `sources/universities.py` → `PAGES` |
 
 Not covered, and why:
 - **BSC:** its site is behind an anti-bot challenge, which Atalaya doesn't try to get past.
-- **CSIC's own job board:** rendered client-side. CSIC posts published in the BOE are included.
 - **EURAXESS:** blocks automated search. A data-feed request is drafted in `docs/euraxess-data-request.md`.
 - **Regional bulletins (BOJA, DOGC, BOCM…):** not yet; universities' own pages cover the same contract calls more directly.
 
@@ -62,3 +63,12 @@ Not covered, and why:
 
 A source that crashes keeps its previous offers online and raises a warning in the Actions run.
 A source that normally has items but suddenly returns none also raises a warning.
+
+## Issues
+
+Please use Github issues for any problems or requests.
+
+## License
+
+The code is released under the [MIT License](LICENSE). The offers themselves come from public sources;
+each listing links to its original notice, and those notices belong to their publishers.

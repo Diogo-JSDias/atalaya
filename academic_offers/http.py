@@ -14,8 +14,10 @@ import httpx
 
 log = logging.getLogger(__name__)
 
-SITE_URL = os.environ.get("ATALAYA_SITE_URL", "https://github.com/atalaya-es/atalaya").rstrip("/")
-USER_AGENT = f"AtalayaBot/0.2 (+{SITE_URL}/about.html; once a day, non-commercial)"
+# The published site (set by the GitHub workflow). Until it exists, point site owners at the author's page.
+SITE_URL = os.environ.get("ATALAYA_SITE_URL", "").rstrip("/")
+CONTACT_URL = f"{SITE_URL}/about.html" if SITE_URL else "https://pacocp.es"
+USER_AGENT = f"AtalayaBot/0.2 (+{CONTACT_URL}; once a day, non-commercial)"
 BOT_NAME = "AtalayaBot"
 DEFAULT_DELAY = 2.0
 
@@ -38,13 +40,16 @@ class Disallowed(Exception):
 def _robots_for(scheme: str, host: str) -> RobotFileParser | None:
     if host not in _robots:
         rp = RobotFileParser()
-        try:
-            r = _client.get(f"{scheme}://{host}/robots.txt", timeout=15)
-            # No robots.txt (4xx) means everything is allowed; a server error means "try later".
+        _robots[host] = None
+        for _ in range(3):
+            try:
+                r = _client.get(f"{scheme}://{host}/robots.txt", timeout=15)
+            except httpx.HTTPError:
+                continue
+            # No robots.txt (4xx) means everything is allowed.
             rp.parse(r.text.splitlines() if r.status_code == 200 else [])
             _robots[host] = rp
-        except httpx.HTTPError:
-            _robots[host] = None
+            break
     return _robots[host]
 
 
@@ -69,12 +74,24 @@ def _cached(method: str, url: str, suffix: str) -> Path:
     return CACHE_DIR / (hashlib.sha1(f"{method} {url}".encode()).hexdigest() + suffix)
 
 
-def _request(url: str, method: str, headers: dict | None) -> httpx.Response:
+def _request(url: str, method: str, headers: dict | None, attempts: int = 4) -> httpx.Response:
     delay = _check(url)
-    _wait(urlparse(url).netloc, delay)
-    resp = _client.request(method, url, headers=headers)
-    resp.raise_for_status()
-    return resp
+    host = urlparse(url).netloc
+    for attempt in range(1, attempts + 1):
+        _wait(host, delay)
+        try:
+            resp = _client.request(method, url, headers=headers)
+        except (httpx.ConnectError, httpx.ReadTimeout) as e:
+            # Some load-balanced public-sector sites (e.g. sede.csic.gob.es) have one backend that
+            # serves an incomplete certificate chain or stalls. Certificates are still verified;
+            # we just try again and usually land on a healthy backend.
+            if attempt == attempts:
+                raise
+            log.info("retrying %s after %s", url, type(e).__name__)
+            continue
+        resp.raise_for_status()
+        return resp
+    raise RuntimeError("unreachable")
 
 
 def fetch(url: str, *, method: str = "GET", headers: dict | None = None, use_cache: bool = True) -> str:

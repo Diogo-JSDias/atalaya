@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from ..models import Offer
-from . import boe, calls, centres, universities
+from . import boe, calls, centres, csic, universities
 
 
 @dataclass
@@ -31,6 +31,8 @@ SOURCES: list[Source] = [
            lambda _t, _d: calls.aei_calls(), may_be_empty=True),
     Source("ikerbasque", "Ikerbasque", lambda _t, _d: calls.ikerbasque_calls(), may_be_empty=True),
     Source("icrea", "ICREA", lambda _t, _d: calls.icrea_calls(), may_be_empty=True),
+    Source("csic", "CSIC – Sede electrónica, convocatorias de personal",
+           lambda today, _d: csic.scrape(today), may_be_empty=True),
     Source("cnic", "CNIC job board", lambda _t, _d: centres.cnic()),
     Source("icfo", "ICFO job board", lambda _t, _d: centres.icfo()),
     Source("crg", "CRG job board", lambda _t, _d: centres.crg()),
