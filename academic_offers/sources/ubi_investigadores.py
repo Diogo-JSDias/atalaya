@@ -22,9 +22,9 @@ log = logging.getLogger(__name__)
 LIST_URL = "https://www.ubi.pt/Sites/Academicos/pt/Pagina/recrutamento"
 OFFICIAL_HOSTS = ("ubi.pt", "diariodarepublica.pt")
 DATE_RE = re.compile(
-    r"(?<!\\d)(?:(\\d{1,2})[/-](\\d{1,2})[/-](20\\d{2})|(20\\d{2})[/-](\\d{1,2})[/-](\\d{1,2}))(?!\\d)"
+    r"(?<!\d)(?:(\d{1,2})[/-](\d{1,2})[/-](20\d{2})|(20\d{2})[/-](\d{1,2})[/-](\d{1,2}))(?!\d)"
 )
-NOTICE_RE = re.compile(r"\\bEdital\\s+n[ºo°.]?\\s*(\\d{1,5}/20\\d{2})\\b", re.I)
+NOTICE_RE = re.compile(r"\bEdital\s+n[ºo°.]?\s*(\d{1,5}/20\d{2})\b", re.I)
 
 
 def _clean(value: str) -> str:
@@ -187,7 +187,7 @@ def parse_listing(html: str, base_url: str = LIST_URL) -> list[Offer]:
             notice_text = _clean(cells[notice_idx].get_text(" ", strip=True))
         notice = _notice_number(notice_text)
         deadline = _deadline(_clean(cells[deadline_idx].get_text(" ", strip=True)))
-        posts_match = re.search(r"\\b(\\d{1,3})\\b", cells[posts_idx].get_text(" ", strip=True))
+        posts_match = re.search(r"\b(\d{1,3})\b", cells[posts_idx].get_text(" ", strip=True))
         n_posts = max(1, int(posts_match.group(1))) if posts_match else 1
 
         application_url = None
