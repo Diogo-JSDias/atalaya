@@ -1,0 +1,47 @@
+"""Tests for the public Diário da República RSS source."""
+import unittest
+
+from academic_offers.sources.dr import parse_feed
+
+
+FEED = """<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel>
+  <item>
+    <title>Aviso de abertura de procedimento concursal para recrutamento de investigador auxiliar</title>
+    <link>https://diariodarepublica.pt/dr/detalhe/aviso/123/2026</link>
+    <pubDate>Mon, 02 Nov 2026 09:00:00 GMT</pubDate>
+    <description>Universidade pública — prazo de candidatura indicado no aviso.</description>
+  </item>
+  <item>
+    <title>Homologação da lista unitária de ordenação final do procedimento concursal</title>
+    <link>https://diariodarepublica.pt/dr/detalhe/aviso/124/2026</link>
+  </item>
+  <item>
+    <title>Regulamento de avaliação de desempenho</title>
+    <link>https://diariodarepublica.pt/dr/detalhe/regulamento/125/2026</link>
+  </item>
+</channel></rss>"""
+
+
+class DiarioRepublicaSourceTests(unittest.TestCase):
+    def test_keeps_recruitment_notice_and_original_url(self):
+        offers = parse_feed(FEED)
+        self.assertEqual(len(offers), 1)
+        self.assertEqual(offers[0].source, "dr")
+        self.assertEqual(offers[0].region, "Portugal")
+        self.assertEqual(
+            offers[0].url,
+            "https://diariodarepublica.pt/dr/detalhe/aviso/123/2026",
+        )
+        self.assertEqual(offers[0].published, "2026-11-02")
+
+    def test_invalid_xml_returns_empty_list(self):
+        self.assertEqual(parse_feed("<rss>"), [])
+
+    def test_duplicate_links_are_removed(self):
+        duplicate = FEED.replace("</channel>", FEED.split("<item>", 1)[1].split("</item>", 1)[0].join(["<item>", "</item>"]) + "</channel>")
+        self.assertEqual(len(parse_feed(duplicate)), 1)
+
+
+if __name__ == "__main__":
+    unittest.main()
