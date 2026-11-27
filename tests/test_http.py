@@ -18,7 +18,7 @@ class RobotsPolicyTests(unittest.TestCase):
     def test_parses_successful_robots_rules(self, mock_get):
         mock_get.return_value = type("Response", (), {
             "status_code": 200,
-            "text": "User-agent: *\\nDisallow: /private\\n",
+            "text": "User-agent: *\nDisallow: /private\n",
         })()
 
         rules = http._robots_for("https", "example.org")

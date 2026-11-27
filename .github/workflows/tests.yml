@@ -6,12 +6,14 @@ on:
     paths:
       - "academic_offers/**"
       - "tests/**"
+      - "templates/**"
       - "requirements.txt"
       - ".github/workflows/**"
   pull_request:
     paths:
       - "academic_offers/**"
       - "tests/**"
+      - "templates/**"
       - "requirements.txt"
       - ".github/workflows/**"
   workflow_dispatch:
