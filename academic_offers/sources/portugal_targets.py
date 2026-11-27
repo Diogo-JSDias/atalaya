@@ -167,20 +167,22 @@ def lip(today: dt.date | None = None) -> list[Offer]:
     return [o for o in offers if not o.deadline or o.deadline >= today.isoformat()]
 
 
-def ua_research(today: dt.date | None = None) -> list[Offer]:
-    today = today or dt.date.today()
-    offers = []
-    for url, source, category in (
-        (UA_RESEARCH_URL, "ua-investigacao", "Investigação"),
-        (UA_TEACHING_URL, "ua-docentes", "Docência"),
-    ):
-        offers.extend(parse_link_board(
-            fetch(url), base_url=url, source=source,
-            institution="Universidade de Aveiro", region="Aveiro",
-            href_pattern=r"(?:sgrh|jobs\.ua\.pt|api-portal\.ua\.pt)",
-            domains=("ua.pt",), open_listing=False,
-        ))
+def _ua_board(url: str, source: str, today: dt.date) -> list[Offer]:
+    offers = parse_link_board(
+        fetch(url), base_url=url, source=source,
+        institution="Universidade de Aveiro", region="Aveiro",
+        href_pattern=r"(?:jobs\\.ua\\.pt/Home/Detail/\\d+|api-portal\\.ua\\.pt/api/v1/file/\\d+)",
+        domains=("ua.pt",), open_listing=False,
+    )
     return [o for o in offers if not o.deadline or o.deadline >= today.isoformat()]
+
+
+def ua_research(today: dt.date | None = None) -> list[Offer]:
+    return _ua_board(UA_RESEARCH_URL, "ua-investigacao", today or dt.date.today())
+
+
+def ua_teaching(today: dt.date | None = None) -> list[Offer]:
+    return _ua_board(UA_TEACHING_URL, "ua-docentes", today or dt.date.today())
 
 
 def uc_portuguesa(today: dt.date | None = None) -> list[Offer]:
