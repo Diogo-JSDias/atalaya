@@ -14,7 +14,7 @@ class PortugalEditionTests(unittest.TestCase):
     def test_only_portuguese_and_european_sources_are_active(self):
         self.assertEqual(
             {source.key for source in SOURCES},
-            {"dr", "fct", "ulisboa", "uporto", "eu-ft"},
+            {"dr", "fct", "ulisboa", "uporto", "uc-apply", "eu-ft"},
         )
 
     @patch("academic_offers.__main__.store.last_runs", return_value={})
