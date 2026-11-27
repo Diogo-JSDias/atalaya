@@ -98,7 +98,9 @@ def parse_listing(
     for anchor in candidate_links:
         card = _card_for_link(anchor)
         if card is None:
-            continue
+            raise RuntimeError(
+                "IPLeiria official application link found but its vacancy card or deadline was not recognized"
+            )
         card_text = _clean(card.get_text(" ", strip=True))
         period = PERIOD_RE.search(card_text)
         if not period:
