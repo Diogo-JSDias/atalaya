@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from ..models import Offer
-from . import boe, calls, centres, csic, universities
+from . import boe, calls, centres, csic, dr, universities
 
 
 @dataclass
@@ -24,6 +24,8 @@ def _uni(page: universities.Page) -> Source:
 
 
 SOURCES: list[Source] = [
+    Source("dr", "Diário da República – 2.ª Série (RSS, avisos de recrutamento/investigação)",
+           lambda today, _d: dr.scrape(today), may_be_empty=True),
     Source("boe", "BOE – Boletín Oficial del Estado, sección II.B (universidades, CSIC)",
            lambda today, days: boe.scrape(days=days, today=today)),
     Source("eu-ft", "EU Funding & Tenders portal (MSCA, ERC)", lambda today, _d: calls.eu_calls(today)),
