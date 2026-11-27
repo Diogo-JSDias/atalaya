@@ -1,5 +1,6 @@
 """Tests for the public FCT open-calls listing and detail-page parsers."""
 import unittest
+from unittest.mock import patch
 
 from academic_offers.models import Offer
 from academic_offers.sources.fct import parse_detail_page, parse_open_listing, _enrich_offer
@@ -121,13 +122,38 @@ class FCTSourceTests(unittest.TestCase):
                                     "Concurso Estímulo ao Emprego Científico Individual")
         self.assertEqual(details["funding_type"], "Emprego científico")
 
-    def test_enrichment_preserves_listing_record_when_detail_cannot_be_fetched(self):
+    @patch("academic_offers.sources.fct.fetch")
+    def test_enrichment_adds_deadline_category_and_domain(self, mock_fetch):
+        mock_fetch.return_value = """
+        <main>
+          <p>Submissão de candidaturas: 02/03/2027 a 31/03/2027</p>
+          <table><tr><th>Tipo de financiamento</th><td>Bolsas</td></tr></table>
+          <dl><dt>Domínio Científico</dt><dd>Ciências Naturais</dd></dl>
+        </main>
+        """
         offer = Offer(source="fct", kind="call", title="Concurso de Bolsas",
                       url="https://www.fct.pt/concursos/teste/")
-        # This test exercises deterministic extraction only. Network failure policy
-        # is verified by keeping parse_detail_page independent from fetch.
-        self.assertEqual(offer.deadline, None)
-        self.assertEqual(offer.extra, {})
+        enriched = _enrich_offer(offer)
+        self.assertEqual(enriched.deadline, "2027-03-31")
+        self.assertEqual(enriched.extra["fct_funding_type"], "Bolsas")
+        self.assertEqual(enriched.area_raw, "Ciências Naturais")
+        self.assertTrue(enriched.extra["detail_enriched"])
+
+    @patch("academic_offers.sources.fct.fetch", side_effect=RuntimeError("network unavailable"))
+    def test_enrichment_keeps_listing_record_when_detail_fetch_fails(self, mock_fetch):
+        offer = Offer(source="fct", kind="call", title="Concurso de Bolsas",
+                      url="https://www.fct.pt/concursos/teste/")
+        enriched = _enrich_offer(offer)
+        self.assertIsNone(enriched.deadline)
+        self.assertEqual(enriched.extra, {})
+        mock_fetch.assert_called_once()
+
+    @patch("academic_offers.sources.fct.fetch")
+    def test_enrichment_never_fetches_external_detail_urls(self, mock_fetch):
+        offer = Offer(source="fct", kind="call", title="Concurso",
+                      url="https://example.org/notice")
+        self.assertIs(_enrich_offer(offer), offer)
+        mock_fetch.assert_not_called()
 
 
 if __name__ == "__main__":
