@@ -44,6 +44,17 @@ class UPortoSourceTests(unittest.TestCase):
         self.assertEqual(professor.kind, "position")
         self.assertEqual(professor.deadline, "2026-12-19")
 
+    def test_deadline_accepts_written_portuguese_month(self):
+        html = """
+        <article>
+          <div class="category">Bolsas</div>
+          <h2><a href="/oportunidades/bolsa/">Bolsa de Investigação</a></h2>
+          <p>Prazo de candidatura: 28 de novembro de 2026</p>
+        </article>
+        """
+        offer = parse_listing(html)[0]
+        self.assertEqual(offer.deadline, "2026-11-28")
+
     def test_preserves_official_detail_url_and_counts_posts(self):
         html = """
         <article>
