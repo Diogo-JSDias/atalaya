@@ -74,7 +74,7 @@ class UCApplySourceTests(unittest.TestCase):
         html = """
         <main>
           <h1>IT137-26-485</h1>
-          <p>Data de publicação 09/11/2026</p>
+          <dl><dt>Data de publicação</dt><dd>09/11/2026</dd></dl>
           <p>Candidaturas 11/11/2026 a 24/11/2026</p>
           <dl><dt>Área</dt><dd>Engenharia Química, Engenharia de Materiais, Química</dd></dl>
           <dl><dt>Código do procedimento</dt><dd>IT137-26-485</dd></dl>
@@ -84,6 +84,7 @@ class UCApplySourceTests(unittest.TestCase):
         self.assertEqual(details["deadline"], "2026-11-24")
         self.assertEqual(details["area"], "Engenharia Química, Engenharia de Materiais, Química")
         self.assertEqual(details["code"], "IT137-26-485")
+        self.assertEqual(details["published"], "2026-11-09")
 
     @patch("academic_offers.sources.uc_apply.fetch")
     def test_enrichment_keeps_listing_record_when_detail_fails(self, mock_fetch):
