@@ -93,6 +93,19 @@ class ULisboaSourceTests(unittest.TestCase):
         self.assertEqual({o.deadline for o in offers}, {"2027-01-05", "2026-11-30"})
         self.assertEqual(mock_fetch.call_count, 2)
 
+    @patch("academic_offers.sources.ulisboa.fetch")
+    def test_scrape_continues_after_page_with_only_administrative_rows(self, mock_fetch):
+        administrative_only = """
+        <table><tr>
+        <td>Ref. A</td><td><a href="/info/recrutamento?c=a">Procedimento concursal para assistente administrativo</a></td>
+        <td>1</td><td>Assistente Técnico</td><td>31/12/2026</td>
+        </tr></table>
+        """
+        mock_fetch.side_effect = [administrative_only, HTML, ""]
+        offers = scrape(dt.date(2026, 11, 27))
+        self.assertEqual(len(offers), 2)
+        self.assertEqual(mock_fetch.call_count, 3)
+
 
 if __name__ == "__main__":
     unittest.main()
