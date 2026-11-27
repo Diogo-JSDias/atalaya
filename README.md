@@ -43,6 +43,14 @@ O GitHub Pages num plano gratuito exige um repositório público.
 | `uminho-eeg` | Universidade do Minho – EEG | Apenas concursos abertos para pessoal docente/investigador da Escola de Economia, Gestão e Ciência Política; não representa a cobertura central de toda a UMinho. |
 | `novafct-investigadores` | NOVA FCT | Concursos para investigadores na página oficial de recrutamento da Faculdade; não inclui concursos docentes ou não docentes. |
 | `ubi-docentes` | Universidade da Beira Interior | Concursos para pessoal docente em candidatura aberta; os concursos para investigadores não estão cobertos por esta fonte. |
+| `ua-investigacao`, `ua-docentes` | Universidade de Aveiro | Concursos de pessoal investigador e docente nas páginas oficiais de recursos humanos. |
+| `iscte` | Iscte | Portal de concursos docentes, técnicos, investigação e bolsas; inclui a Associação Iscte Conhecimento e Inovação. |
+| `ucp-clsbe` | Universidade Católica Portuguesa – Católica-Lisbon | Oportunidades de docência, investigadores doutorados e bolsas publicadas pela CLSBE; não representa todas as escolas da UCP. |
+| `gimm` | GIMM | Página oficial de oportunidades abertas do instituto. |
+| `inl` | INL | Portal Jobvite oficial de posições abertas. |
+| `lip` | LIP | Portal oficial de candidaturas; só concursos com estado explicitamente aberto. |
+
+A expansão de 27/11/2026 acrescenta Aveiro, Iscte e Católica-Lisbon, bem como feeds próprios para GIMM, INL e LIP. A cobertura da UCP continua limitada à Católica-Lisbon. O portal de recrutamento da Fundação Champalimaud é carregado dinamicamente e requer uma integração específica; LASI é uma rede de unidades associadas sem um portal único de contratação, pelo que as vagas devem ser recolhidas nas instituições empregadoras participantes. Estas duas fontes permanecem por integrar, não sendo substituídas por feeds presumidos.
 
 As fontes portuguesas estão numa fase de validação. Confirma sempre os requisitos e prazos no aviso original. A BEP permanece desligada enquanto não existir acesso automatizado autorizado e estável.
 
