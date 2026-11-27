@@ -68,6 +68,13 @@ class PortugalTargetsTests(unittest.TestCase):
         )
         self.assertEqual([o.title for o in offers], ["Assistant Researcher Hiring"])
 
+    def test_lip_extracts_title_from_call_detail_and_requires_application_stage(self):
+        html = "<main><h1>Call</h1><h3>Assistant Researcher Hiring</h3><p>Open - Applications</p></main>"
+        with patch.object(pt, "fetch", return_value=html):
+            offers = pt.lip(today=dt.date(2026, 11, 27))
+        self.assertEqual(len(offers), 1)
+        self.assertEqual(offers[0].title, "Assistant Researcher Hiring")
+
     def test_lip_excludes_calls_already_in_jury_selection(self):
         html = "<main><h1>Assistant Researcher Hiring</h1><p>Open - Jury Selection</p></main>"
         with patch.object(pt, "fetch", return_value=html):
