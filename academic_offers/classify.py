@@ -25,6 +25,11 @@ FIELD_RULES: list[tuple[str, str, str]] = [
     (r"ciências médicas e da saúde", LS, "Health & Medicine"),
     (r"ciências naturais", LS, "Natural Sciences"),
     (r"ciências sociais", SS, "Social Sciences"),
+    (r"ciências da vida|ciências biomédicas|ciências da saúde", LS, "Life & Health Sciences"),
+    (r"ciências jurídico|direito|law|jur[íi]dic", SS, "Law"),
+    (r"ciências do desporto|desporto|sport", SS, "Sports Sciences"),
+    (r"ciências empresariais|gestão|management", SS, "Economics & Business"),
+    (r"estudos musicais|musicologia|música", HU, "Music"),
     (r"did[áa]ctica|educaci[óo]n f[íi]sica|deport|ensino|pedagogia", SS, "Education"),
     (r"computaci|inteligencia artificial|inform[áa]tic|lenguajes y sistemas|computer|software|data scien|telem[áa]tic|arquitectura y tecnolog[íi]a de computadores", PE, "Computer Science & AI"),
     (r"veterinari|producci[óo]n animal|sanidad animal|medicina y cirug[íi]a animal|anatom[íi]a.*comparadas|agr[íi]col|agronom|edafolog|forestal|tecnolog[íi]a de alimentos|nutrici[óo]n y bromatolog", LS, "Agriculture, Food & Veterinary"),
@@ -48,6 +53,7 @@ FIELD_RULES: list[tuple[str, str, str]] = [
 _COMPILED = [(re.compile(p, re.I), f, s) for p, f, s in FIELD_RULES]
 
 STAGE_RULES: list[tuple[str, str]] = [
+    (r"investigadores?\\s+dl\\s*57|investigador(?:a)?\\s+de\\s+n[ií]vel\\s+(?:inicial|interm[eé]dio)|investigador(?:a)?\\s+doutorado", "Researcher / DL 57"),
     (r"catedr[áa]tic|full professor|profesor/a de investigaci|professor catedrático", "Senior faculty / research professor"),
     (r"titular de universidad|permanente laboral|cient[íi]fico/a titular|investigador/a cient|permanent position|group leader|tenure|professor associado|professor auxiliar|investigador principal|investigador auxiliar", "Permanent faculty / researcher"),
     (r"ayudante doctor|ram[óo]n y cajal|tenure.track|erc (starting|consolidator)|consolidator grant|research fellows|icrea", "Tenure-track & independent fellowships"),
