@@ -48,6 +48,21 @@ def _clean(value: str) -> str:
     return " ".join(value.split())
 
 
+def _last_date(value: str) -> str | None:
+    """Return the final date in a date-range cell (usually the closing date)."""
+    patterns = (
+        r"\\d{1,2}[/.-]\\d{1,2}[/.-]20\\d{2}",
+        r"\\d{1,2}\\s+de\\s+(?:janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)\\s+(?:de\\s+)?20\\d{2}",
+    )
+    matches = []
+    for pattern in patterns:
+        matches.extend(re.finditer(pattern, value, re.I))
+    if not matches:
+        return first_date(value)
+    match = max(matches, key=lambda item: item.start())
+    return first_date(match.group(0))
+
+
 def _card(node):
     card = node
     for _ in range(6):
@@ -165,7 +180,7 @@ def lip(today: dt.date | None = None) -> list[Offer]:
     text = _clean(soup.get_text(" ", strip=True))
     heading = soup.find("h1")
     title = _clean(heading.get_text(" ", strip=True)) if heading else ""
-    if not title or not re.search(r"\\bopen\\b|\\baberto\\b|\\ba decorrer\\b", text, re.I):
+    if not title or not re.search(r"\bopen\b|\baberto\b|\ba decorrer\b", text, re.I):
         return []
     if CLOSED.search(text):
         return []
@@ -232,7 +247,7 @@ def uc_portuguesa(today: dt.date | None = None) -> list[Offer]:
         url = urljoin(UCP_CLSBE_URL, link["href"])
         if not _allowed_host(url, ("ucp.pt",)) or url in seen:
             continue
-        deadline = first_date(_clean(cells[-2].get_text(" ", strip=True)))
+        deadline = _last_date(_clean(cells[-2].get_text(" ", strip=True)))
         if deadline and deadline < today.isoformat():
             continue
         seen.add(url)
