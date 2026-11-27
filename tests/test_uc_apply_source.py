@@ -43,6 +43,11 @@ class UCApplySourceTests(unittest.TestCase):
         self.assertEqual(offer.n_posts, 1)
         self.assertEqual(offer.deadline, "2026-12-04")
         self.assertEqual(offer.url, "https://www.apply.uc.pt/procedure/abc123")
+        self.assertEqual(
+            offer.title,
+            "Bolsas de Investigação — Engenharia Eletrotécnica e de Computadores",
+        )
+        self.assertNotIn("Universidade de Coimbra", offer.title)
 
     def test_opening_date_is_not_used_as_a_deadline(self):
         offer = next(o for o in parse_listing(LISTING) if "Investigadores DL 57" in o.title)
@@ -53,6 +58,11 @@ class UCApplySourceTests(unittest.TestCase):
             _deadline_from_text("Candidaturas 11/11/2026 a 24/11/2026"),
             "2026-11-24",
         )
+
+    def test_date_parser_accepts_dot_and_hyphen_dmy(self):
+        from academic_offers.sources.uc_apply import _iso_date
+        self.assertEqual(_iso_date("24.11.2026"), "2026-11-24")
+        self.assertEqual(_iso_date("24-11-2026"), "2026-11-24")
 
     def test_single_explicit_until_date_is_accepted(self):
         self.assertEqual(
