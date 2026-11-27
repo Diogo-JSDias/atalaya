@@ -20,21 +20,22 @@ log = logging.getLogger(__name__)
 
 FCT_OPEN = "https://www.fct.pt/concursos/?paged=1&tab=open"
 FCT_HOST = "www.fct.pt"
-DATE_DMY = re.compile(r"(?<!\\d)(\\d{1,2})[./-](\\d{1,2})[./-](20\\d{2})(?!\\d)")
-MONTH_YEAR = re.compile(
-    r"\\b(jan(?:eiro)?|fev(?:ereiro)?|mar(?:ço|co)?|abr(?:il)?|mai(?:o)?|jun(?:ho)?|"
-    r"jul(?:ho)?|ago(?:sto)?|set(?:embro)?|out(?:ubro)?|nov(?:embro)?|dez(?:embro)?)"
-    r"\\.?\\s+(20\\d{2})\\b", re.I,
+DATE_DMY = re.compile(r"(?<!\d)(\d{1,2})[./-](\d{1,2})[./-](20\d{2})(?!\d)")
+DEADLINE_LABEL = re.compile(
+    r"(?:data\s+limite|prazo(?:\s+(?:de|para))?\s+candidaturas?|"
+    r"submiss[aã]o\s+de\s+candidaturas|candidaturas\s+até)\s*[:：–-]?\s*(.{0,100})",
+    re.I,
 )
 
 
 def _deadline(text: str) -> str | None:
-    """Return only an explicit numeric date; month/year labels are not exact deadlines."""
-    for day, month, year in DATE_DMY.findall(text):
-        try:
-            return dt.date(int(year), int(month), int(day)).isoformat()
-        except ValueError:
-            continue
+    """Return a full numeric date only when it is attached to a deadline label."""
+    for label in DEADLINE_LABEL.finditer(text):
+        for day, month, year in DATE_DMY.findall(label.group(1)):
+            try:
+                return dt.date(int(year), int(month), int(day)).isoformat()
+            except ValueError:
+                continue
     return None
 
 
@@ -68,7 +69,7 @@ def parse_open_listing(html: str, base_url: str = FCT_OPEN) -> list[Offer]:
         if not card_text:
             card_text = title
         # Avoid navigation/footer links even if their labels happen to be long.
-        if not re.search(r"\\b(data limite|candidaturas|concurso|bolsa|emprego científico|investiga)", card_text, re.I):
+        if not re.search(r"\b(data limite|candidaturas|concurso|bolsa|emprego científico|investiga)", card_text, re.I):
             continue
 
         seen.add(url)
