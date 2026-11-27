@@ -14,7 +14,7 @@ class PortugalEditionTests(unittest.TestCase):
     def test_only_portuguese_and_european_sources_are_active(self):
         self.assertEqual(
             {source.key for source in SOURCES},
-            {"dr", "fct", "ulisboa", "ist", "uporto", "ualg", "uc-apply", "uminho", "uminho-eeg", "novafct-investigadores", "ubi-docentes", "ubi-investigadores", "nova-ims", "nova-fcsh", "ucp-medicina", "ucp-porto", "ucp-fch", "gimm", "inl", "iscte", "lip", "ua-investigacao", "ua-docentes", "ua-tecnico", "ucp-clsbe", "inesc-tec", "algoritmi", "ieeta", "inesc-id", "itqb-nova", "lasige", "ipleiria", "ips", "ipatimup", "inescc", "cintesis", "eu-ft"},
+            {"dr", "fct", "ulisboa", "ist", "uporto", "ualg", "uc-apply", "uminho", "uminho-eeg", "novafct-investigadores", "ubi-docentes", "ubi-investigadores", "nova-ims", "nova-fcsh", "nova-reitoria", "nova-law", "ucp-medicina", "ucp-porto", "ucp-fch", "gimm", "inl", "iscte", "lip", "ua-investigacao", "ua-docentes", "ua-tecnico", "ucp-clsbe", "inesc-tec", "algoritmi", "ieeta", "inesc-id", "itqb-nova", "lasige", "ipleiria", "ips", "ipatimup", "inescc", "cintesis", "eu-ft"},
         )
 
     @patch("academic_offers.__main__.store.last_runs", return_value={})
@@ -35,6 +35,11 @@ class PortugalEditionTests(unittest.TestCase):
             {"source": "ubi-investigadores", "id": "ubi-researcher-offer", "title": "Oferta UBI Investigador"},
             {"source": "nova-ims", "id": "nova-ims-offer", "title": "Oferta NOVA IMS"},
             {"source": "nova-fcsh", "id": "nova-fcsh-offer", "title": "Oferta NOVA FCSH"},
+            {"source": "nova-reitoria", "id": "nova-reitoria-offer", "title": "Oferta Reitoria NOVA"},
+            {"source": "nova-law", "id": "nova-law-offer", "title": "Oferta NOVA Law"},
+            {"source": "lasige", "id": "lasige-offer", "title": "Oferta LASIGE"},
+            {"source": "ipleiria", "id": "ipleiria-offer", "title": "Oferta IPLeiria"},
+            {"source": "ips", "id": "ips-offer", "title": "Oferta IPS"},
             {"source": "nova-reitoria", "id": "nova-reitoria-offer", "title": "Oferta Reitoria NOVA"},
             {"source": "nova-law", "id": "nova-law-offer", "title": "Oferta NOVA Law"},
             {"source": "ucp-medicina", "id": "ucp-medicina-offer", "title": "Oferta Medicina UCP"},
@@ -68,7 +73,7 @@ class PortugalEditionTests(unittest.TestCase):
         self.assertEqual(count, 39)
         self.assertEqual(
             {row["source"] for row in rows},
-            {"dr", "fct", "ulisboa", "ist", "uporto", "ualg", "uc-apply", "uminho", "uminho-eeg", "novafct-investigadores", "ubi-docentes", "ubi-investigadores", "nova-ims", "nova-fcsh", "ucp-medicina", "ucp-porto", "ucp-fch", "gimm", "inl", "iscte", "lip", "ua-investigacao", "ua-docentes", "ua-tecnico", "ucp-clsbe", "inesc-tec", "algoritmi", "ieeta", "inesc-id", "itqb-nova", "ipatimup", "inescc", "cintesis", "eu-ft"},
+            {"dr", "fct", "ulisboa", "ist", "uporto", "ualg", "uc-apply", "uminho", "uminho-eeg", "novafct-investigadores", "ubi-docentes", "ubi-investigadores", "nova-ims", "nova-fcsh", "nova-reitoria", "nova-law", "ucp-medicina", "ucp-porto", "ucp-fch", "gimm", "inl", "iscte", "lip", "ua-investigacao", "ua-docentes", "ua-tecnico", "ucp-clsbe", "inesc-tec", "algoritmi", "ieeta", "inesc-id", "itqb-nova", "lasige", "ipleiria", "ips", "ipatimup", "inescc", "cintesis", "eu-ft"},
         )
         self.assertFalse(any(row["id"] == "legacy-spanish" for row in rows))
 
