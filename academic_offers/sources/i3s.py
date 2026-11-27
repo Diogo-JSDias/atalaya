@@ -100,7 +100,7 @@ def _title(card: Tag) -> str:
 
     first = candidates[0]
     if first.casefold() == "bolsa de investigação" and len(candidates) > 1:
-        return f"{first.title()} – {candidates[1]}"
+        return f"Bolsa de Investigação – {candidates[1]}"
     return first
 
 
