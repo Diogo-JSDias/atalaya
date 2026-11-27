@@ -17,7 +17,7 @@ from ..models import Offer
 
 log = logging.getLogger(__name__)
 
-# Official "2.ª Série — Todas as partes — HTML" RSS link.
+# Official "2.ª Série — Todas as partes — HTML" RSS link, as listed on the DR RSS page.\n# RSS is used as an index only; the original notice remains the authoritative record.
 RSS_URL = "https://files.diariodarepublica.pt/rss/serie2-html.xml"
 
 # Deliberately broad at first: titles vary between institutions and notice types.
