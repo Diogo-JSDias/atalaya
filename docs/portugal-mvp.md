@@ -5,6 +5,7 @@ This fork is being adapted incrementally. The Spanish sources remain unchanged.
 ## Implemented
 
 - Diário da República: registered a first-pass scraper for the official RSS index of the 2nd series (all parts, HTML). The parser supports RSS and Atom entries, filters likely recruitment/research notices by title and preserves the original notice URL. Its live response and classification quality still need validation in GitHub Actions; verify each notice and deadline at source.
+- Universidade de Lisboa: agregador oficial de recrutamento, com filtro para concursos docentes, investigação e bolsas, extraindo categoria, número de vagas e prazo limite quando publicados. As entradas expiradas são omitidas e o documento principal é preservado em metadados.
 - FCT: registered a parser for the official open-concursos tab. It follows same-domain detail pages (up to 40 per run), extracts full deadlines only when linked to submission/closing labels, and records funding type and scientific domain only when supported by the title or structured page metadata. Failed detail requests leave the listing record intact. Live source coverage and extraction quality still need runtime validation.
 - Portuguese month names are recognised by `academic_offers.dates.first_date`.
 - The classifier recognises a first set of Portuguese academic/research role labels, including professor catedrático, professor associado, professor auxiliar, investigador principal/auxiliar, pós-doutoramento and doutoramento.
@@ -24,6 +25,10 @@ The official RSS subscription page publishes a link for the second series, all p
 ### Fundação para a Ciência e a Tecnologia (FCT)
 
 The FCT publishes a public [Concursos](https://www.fct.pt/concursos/) index with open, planned and closed calls, plus filters for funding type and scientific domain. The filter vocabulary includes Bolsas, Emprego científico, Projetos I&D, Instituições I&D, Infraestruturas, Prémios, Internacional and Outros, alongside seven scientific domains. Its [Bolsas](https://www.fct.pt/financiamento/programas-de-financiamento/bolsas/) and [Emprego Científico](https://www.fct.pt/financiamento/programas-de-financiamento/emprego-cientifico/) pages describe major research-opportunity categories. The 2026 calendar is a planning document, not a live vacancy feed. The scraper consumes the open listing at https://www.fct.pt/concursos/?paged=1&tab=open and follows same-domain detail pages, using explicit closing/submission labels for full dates and structured label/value fields for scientific domains. Funding type is taken from the title or an explicit category field. Missing metadata stays missing; the original notice remains authoritative. Live source coverage and extraction quality still need runtime validation. Do not scrape myFCT as a substitute: it is a separate application portal and may expose application-management records rather than the public notice index.
+
+### Universidade de Lisboa
+
+A página oficial de [Recrutamento](https://www.ulisboa.pt/info/recrutamento) agrupa oportunidades das escolas e serviços, com código, designação, número de vagas, categoria, data limite e documento principal. A fonte inclui funções administrativas além de vagas académicas; o parser só conserva títulos/categorias com sinais explícitos de docência, investigação, carreiras científicas ou bolsas. Prazo passado é filtrado em tempo de recolha.
 
 ### Bolsa de Emprego Público (BEP)
 
