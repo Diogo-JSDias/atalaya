@@ -181,6 +181,7 @@ def _job_card(anchor):
         if (
             re.search(r"Institui[cç][ãa]o\s*:", text, re.I)
             and re.search(r"Fun[cç][ãa]o\s+a\s+desempenhar\s*:", text, re.I)
+            and parent.find(["h2", "h3", "h4", "h5"]) is not None
             and len(pdf_links) == 1
             and pdf_links[0] is anchor
         ):
