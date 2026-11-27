@@ -199,8 +199,10 @@ def parse_detail_page(html: str) -> dict[str, str | None]:
     for node in soup(["script", "style", "noscript", "nav", "footer"]):
         node.decompose()
     body = " ".join(soup.get_text(" ", strip=True).split())
+    publication = _label_value(soup, {"data de publicação", "data da publicação"})
     return {
         "deadline": _deadline_from_text(body),
+        "published": _iso_date(publication) if publication else None,
         "area": _label_value(soup, {"área", "area"}) or None,
         "category": _label_value(soup, {"tipo de procedimento", "categoria"}) or None,
         "code": _label_value(soup, {"código do procedimento", "código"}) or None,
@@ -219,6 +221,10 @@ def _enrich(offer: Offer) -> Offer:
         offer.deadline = str(details["deadline"])
     if details["area"]:
         offer.area_raw = str(details["area"])
+    if details["published"]:
+        offer.published = str(details["published"])
+    if details["category"]:
+        offer.position_type = str(details["category"])
     if details["code"]:
         offer.extra["uc_apply_code"] = str(details["code"])
     offer.extra["detail_enriched"] = True
