@@ -30,6 +30,28 @@ class FCTSourceTests(unittest.TestCase):
         self.assertEqual(len(offers), 1)
         self.assertIsNone(offers[0].deadline)
 
+    def test_date_without_deadline_label_is_not_used(self):
+        html = """
+        <html><main><article>
+          <a href="/concursos/concurso-publicacao/">Concurso de investigação científica</a>
+          <p>Publicado em 01/02/2027. Consulte as condições no aviso.</p>
+        </article></main></html>
+        """
+        offers = parse_open_listing(html)
+        self.assertEqual(len(offers), 1)
+        self.assertIsNone(offers[0].deadline)
+
+    def test_deadline_label_accepts_numeric_date(self):
+        html = """
+        <html><main><article>
+          <a href="/concursos/concurso-prazo/">Concurso de bolsas de investigação</a>
+          <p>Candidaturas até 8-4-2027.</p>
+        </article></main></html>
+        """
+        offers = parse_open_listing(html)
+        self.assertEqual(len(offers), 1)
+        self.assertEqual(offers[0].deadline, "2027-04-08")
+
     def test_ignores_external_and_navigation_links(self):
         html = """
         <html><main>
