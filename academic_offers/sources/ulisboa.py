@@ -140,9 +140,12 @@ def scrape(today: dt.date | None = None) -> list[Offer]:
 
     for page in range(MAX_PAGES):
         page_url = _page_url(page)
-        page_offers = parse_listing(fetch(page_url), page_url)
-        if not page_offers:
+        html = fetch(page_url)
+        # Keep paging through tables with non-academic rows: an administrative-
+        # only page must not hide academic results on the following page.
+        if not BeautifulSoup(html, "html.parser").find("table"):
             break
+        page_offers = parse_listing(html, page_url)
         for offer in page_offers:
             if offer.deadline and offer.deadline < today.isoformat():
                 continue
