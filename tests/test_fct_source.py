@@ -104,6 +104,16 @@ class FCTSourceTests(unittest.TestCase):
         details = parse_detail_page(html)
         self.assertEqual(details["deadline"], "2026-11-13")
 
+    def test_single_submission_date_is_not_replaced_by_later_result_date(self):
+        html = """
+        <html><main>
+          <p>Submissão de candidaturas: 13/11/2026.</p>
+          <p>Resultados provisórios em 31/03/2027.</p>
+        </main></html>
+        """
+        details = parse_detail_page(html)
+        self.assertEqual(details["deadline"], "2026-11-13")
+
     def test_detail_does_not_treat_publication_date_as_deadline(self):
         html = """
         <html><main>
