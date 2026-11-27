@@ -20,10 +20,10 @@ log = logging.getLogger(__name__)
 
 LIST_URL = "https://www.ulisboa.pt/info/recrutamento"
 MAX_PAGES = 10
-DATE_DMY = re.compile(r"(?<!\\d)(\\d{1,2})/(\\d{1,2})/(20\\d{2})(?!\\d)")
+DATE_DMY = re.compile(r"(?<!\d)(\d{1,2})/(\d{1,2})/(20\d{2})(?!\d)")
 ACADEMIC = re.compile(
     r"professor|docente|investigador|investiga[cç][ãa]o|"
-    r"bolsa(?:s)?(?:\\s+de\\s+(?:doutoramento|investiga[cç][ãa]o))?|"
+    r"bolsa(?:s)?(?:\s+de\s+(?:doutoramento|investiga[cç][ãa]o))?|"
     r"doutoramento|p[oó]s[- ]?doc|research|cient[ií]fic",
     re.I,
 )
@@ -51,7 +51,7 @@ def _iso_date(text: str) -> str | None:
 
 
 def _posts(text: str) -> int:
-    match = re.search(r"\\b(\\d{1,3})\\b", text)
+    match = re.search(r"\b(\d{1,3})\b", text)
     return max(1, int(match.group(1))) if match else 1
 
 
