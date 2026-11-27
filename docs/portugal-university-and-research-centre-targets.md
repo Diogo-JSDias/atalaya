@@ -46,7 +46,7 @@ Ordered by the latest available Nature Index Portugal institution-output positio
 | Champalimaud Foundation | NOVA | NOVA FCT and NOVA IMS partial | Keep as an independent target; the dynamic careers list still needs a stable data feed |
 | INL | U.Porto; UMinho | U.Porto active; UMinho EEG-only partial | INL has its own independent Atalaia feed |
 | LIP | ULisboa; U.Porto; Coimbra; UMinho | All four have partial sources | LIP has its own independent Atalaia feed; preserve LIP as employer and host institution separately |
-| LASI | UMinho; U.Porto; Aveiro; ULisboa | All four universities now have at least one partial Atalaia source | No single LASI employer portal was identified; add member-unit feeds and preserve the actual hiring institution |
+| LASI | UMinho; U.Porto; Aveiro; ULisboa | All four universities now have at least one partial Atalaia source; LASIGE is separately integrated as a ULisboa research-unit source | No single LASI employer portal was identified; i3S/INESC TEC/ALGORITMI/IEETA/INESC-ID and other member-unit feeds should preserve the actual hiring institution |
 
 ## Recommended acquisition order
 
@@ -78,4 +78,4 @@ For each new adapter, use the official careers/recruitment page, retain the orig
 ### Atalaia coverage checked
 - Active source registry: `academic_offers/sources/__init__.py`
 - Current source scope: `README.md`
-- Current wave status: Aveiro, Iscte, Católica-Lisbon, GIMM, INL and LIP feeds are integrated; UBI researcher and NOVA IMS sources were added in the second wave, followed by NOVA FCSH and Católica Faculty of Medicine feeds.
+- Current wave status: Aveiro, Iscte, Católica-Lisbon, GIMM, INL, LIP, UBI researcher, NOVA IMS, NOVA FCSH, Católica Faculty of Medicine, NOVA Reitoria, NOVA School of Law, LASIGE, Universidade de Leiria e Oeste (ex-IPLeiria) and UNIPS/IPS feeds are integrated. FCiências.ID and i3S remain the next high-priority additions; Champalimaud is in stand-by while its offers API returns an empty list.
