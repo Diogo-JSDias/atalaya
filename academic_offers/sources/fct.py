@@ -118,12 +118,20 @@ def _deadline(text: str) -> str | None:
         after = [(offset, value) for offset, value in candidates if offset >= label_end]
         before = [(offset, value) for offset, value in candidates if offset < label_start]
         label_text = label.group(0).casefold()
-        is_submission_period = "submissão de candidaturas" in label_text or "prazo" in label_text and "submissão" in label_text
+        is_submission_period = (
+            "submissão" in label_text or "apresentação" in label_text or "período" in label_text
+            or ("prazo" in label_text and "candidatur" in label_text)
+        )
         if after:
-            # Submission labels often precede a start/end range. Use its second
-            # date as the closing date, and ignore later result dates nearby.
+            # Submission labels may precede a start/end range. Use its second
+            # date only when a range connector sits between the first two dates;
+            # otherwise take the nearest date and avoid unrelated result dates.
             after.sort(key=lambda pair: pair[0])
-            selected = after[1][1] if is_submission_period and len(after) > 1 else after[0][1]
+            selected = after[0][1]
+            if is_submission_period and len(after) > 1:
+                between = context[after[0][0] + len(after[0][1].strftime("%d/%m/%Y")):after[1][0]]
+                if re.search(r"\\b(?:a|até|ao|to)\\b|[-–—]", between, re.I):
+                    selected = after[1][1]
             return selected.isoformat()
         if before:
             # Some FCT pages place the closing date immediately before its label.
