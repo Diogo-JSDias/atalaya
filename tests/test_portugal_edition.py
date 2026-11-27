@@ -14,7 +14,7 @@ class PortugalEditionTests(unittest.TestCase):
     def test_only_portuguese_and_european_sources_are_active(self):
         self.assertEqual(
             {source.key for source in SOURCES},
-            {"dr", "fct", "ulisboa", "uporto", "ualg", "uc-apply", "eu-ft"},
+            {"dr", "fct", "ulisboa", "uporto", "ualg", "uc-apply", "uminho-eeg", "eu-ft"},
         )
 
     @patch("academic_offers.__main__.store.last_runs", return_value={})
@@ -28,13 +28,17 @@ class PortugalEditionTests(unittest.TestCase):
             {"source": "uporto", "id": "uporto-offer", "title": "Oferta U.Porto"},
             {"source": "ualg", "id": "ualg-offer", "title": "Oferta UAlg"},
             {"source": "uc-apply", "id": "coimbra-offer", "title": "Bolsa UC"},
+            {"source": "uminho-eeg", "id": "uminho-offer", "title": "Oferta UMinho EEG"},
             {"source": "eu-ft", "id": "european-call", "title": "ERC call"},
         ]
         with tempfile.TemporaryDirectory() as tmp:
             count = build_site(object(), dt.date(2026, 11, 27), Path(tmp))
             rows = json.loads((Path(tmp) / "offers.json").read_text(encoding="utf-8"))
-        self.assertEqual(count, 7)
-        self.assertEqual({row["source"] for row in rows}, {"dr", "fct", "ulisboa", "uporto", "ualg", "uc-apply", "eu-ft"})
+        self.assertEqual(count, 8)
+        self.assertEqual(
+            {row["source"] for row in rows},
+            {"dr", "fct", "ulisboa", "uporto", "ualg", "uc-apply", "uminho-eeg", "eu-ft"},
+        )
         self.assertFalse(any(row["id"] == "legacy-spanish" for row in rows))
 
 

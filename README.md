@@ -9,7 +9,7 @@ Todos os dias, a Atalaia recolhe concursos para docentes, vagas de investigaçã
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python -m academic_offers                 # scrape all sources, update data/, build site/
-.venv/bin/python -m academic_offers --build         # rebuild site/ from the database only
+.venv/bin/python -m academic_offers --build         # rebuild the site from the database only
 .venv/bin/python -m academic_offers --only dr,fct  # run selected Portuguese sources only
 .venv/bin/python -m unittest discover -s tests      # offline tests
 python3 -m http.server 8766 --directory site        # preview at http://localhost:8766
@@ -40,6 +40,7 @@ O GitHub Pages num plano gratuito exige um repositório público.
 | `uporto` | Universidade do Porto | Arquivo de oportunidades abertas; bolsas de investigação e recrutamento académico. |
 | `ualg` | Universidade do Algarve | Procedimentos concursais de docentes e investigadores, com datas e documentos oficiais. |
 | `uc-apply` | Universidade de Coimbra | UC Apply; bolsas de investigação, docentes e investigadores com candidaturas abertas. |
+| `uminho-eeg` | Universidade do Minho – EEG | Apenas concursos abertos para pessoal docente/investigador da Escola de Economia, Gestão e Ciência Política; não representa a cobertura central de toda a UMinho. |
 
 As fontes portuguesas estão numa fase de validação. Confirma sempre os requisitos e prazos no aviso original. A BEP permanece desligada enquanto não existir acesso automatizado autorizado e estável.
 
