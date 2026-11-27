@@ -47,6 +47,7 @@ SOURCES: list[Source] = [
     Source("lip", "LIP – Laboratório de Instrumentação e Física Experimental de Partículas", lambda today, _d: portugal_targets.lip(today), may_be_empty=True),
     Source("ua-investigacao", "Universidade de Aveiro – concursos de pessoal investigador", lambda today, _d: portugal_targets.ua_research(today), may_be_empty=True),
     Source("ua-docentes", "Universidade de Aveiro – concursos de pessoal docente", lambda today, _d: portugal_targets.ua_teaching(today), may_be_empty=True),
+    Source("ua-tecnico", "Universidade de Aveiro – portal JobsUA (pessoal técnico, administrativo e de gestão)", lambda today, _d: portugal_targets.ua_technical(today), may_be_empty=True),
     Source("ucp-clsbe", "Universidade Católica Portuguesa – Católica-Lisbon (docência/investigação/bolsas)", lambda today, _d: portugal_targets.uc_portuguesa(today), may_be_empty=True),
     Source("eu-ft", "EU Funding & Tenders – concursos ERC e MSCA",
            lambda today, _d: calls.eu_calls(today), may_be_empty=True),
