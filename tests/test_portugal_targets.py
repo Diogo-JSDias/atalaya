@@ -24,11 +24,10 @@ class PortugalTargetsTests(unittest.TestCase):
 
     def test_inl_jobvite_board_keeps_research_roles(self):
         html = """
-        <main><section class="job-list">
-          <a href="/inl/job/JR123">Postdoctoral Researcher – Nanophotonics</a>
-          <span>Braga, Portugal</span>
-          <a href="/inl/job/JR124">Finance Assistant</a>
-        </section></main>"""
+        <main><div class="job"><a href="/inl/job/JR123">Postdoctoral Researcher – Nanophotonics</a>
+          <span>Braga, Portugal</span></div>
+          <div class="job"><a href="/inl/job/JR124">Finance Assistant</a></div>
+        </main>"""
         offers = pt.parse_link_board(
             html, base_url=pt.INL_URL, source="inl", institution="INL",
             region="Braga", href_pattern=r"/inl/job/",
