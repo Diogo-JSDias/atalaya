@@ -132,7 +132,7 @@ def _deadline(text: str) -> str | None:
             selected = after[0][2]
             if is_submission_period and len(after) > 1:
                 between = context[after[0][1]:after[1][0]]
-                if re.search(r"\\b(?:a|até|ao|to)\\b|[-–—]", between, re.I):
+                if re.search(r"\b(?:a|até|ao|to)\b|[-–—]", between, re.I):
                     selected = after[1][2]
             return selected.isoformat()
         if before:
