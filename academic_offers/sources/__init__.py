@@ -70,6 +70,9 @@ SOURCES: list[Source] = [
     Source("ieeta", "IEETA – Universidade de Aveiro (Rede LASI)", lambda today, _d: ieeta.scrape(today), may_be_empty=True),
     Source("inesc-id", "INESC-ID", lambda today, _d: inesc_id.scrape(today), may_be_empty=True),
     Source("itqb-nova", "ITQB NOVA", lambda today, _d: itqb_nova.scrape(today), may_be_empty=True),
+    Source("ipatimup", "Ipatimup – Instituto de Patologia e Imunologia Molecular da Universidade do Porto (Rede LASI)", lambda today, _d: portugal_targets.ipatimup(today), may_be_empty=True),
+    Source("inescc", "INESC Coimbra – Instituto de Engenharia de Sistemas e Computadores de Coimbra (Rede LASI)", lambda today, _d: portugal_targets.inescc(today), may_be_empty=True),
+    Source("cintesis", "CINTESIS – Centro de Investigação em Tecnologias e Serviços de Saúde", lambda today, _d: portugal_targets.cintesis(today), may_be_empty=True),
     Source("eu-ft", "EU Funding & Tenders – concursos ERC e MSCA",
            lambda today, _d: calls.eu_calls(today), may_be_empty=True),
 ]

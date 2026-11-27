@@ -29,6 +29,9 @@ UA_RESEARCH_URL = "https://www.ua.pt/pt/sgrh/pessoal-investigador-novos-concurso
 UA_TEACHING_URL = "https://www.ua.pt/pt/sgrh/pessoal-docente-novos-concursos-e-ofertas"
 UA_TAG_URL = "https://jobs.ua.pt/"
 UCP_CLSBE_URL = "https://clsbe.lisboa.ucp.pt/pt-pt/investigacao/posicoes-investigacao"
+IPATIMUP_URL = "https://www.ipatimup.pt/opportunities/"
+INESCC_URL = "https://www.inescc.pt/bolsas-e-empregos/"
+CINTESIS_URL = "https://cintesis.eu/en/calls/"
 
 CLOSED = re.compile(
     r"candidaturas? encerrad[ao]s?|call (?:is )?closed|this call is now closed|"
@@ -132,6 +135,86 @@ def parse_link_board(
             extra={"listing_url": base_url},
         ))
     return offers
+
+
+def ipatimup(today: dt.date | None = None) -> list[Offer]:
+    """Scrape open positions from IPATIMUP (Institute of Molecular Pathology and Immunology, U.Porto)."""
+    today = today or dt.date.today()
+    today_iso = today.isoformat()
+    # IPATIMUP publishes positions on their /opportunities/ page as a list of
+    # article/li items; also try /careers/ and /en/opportunities/ as fallbacks.
+    html = ""
+    for candidate_url in (IPATIMUP_URL, "https://www.ipatimup.pt/careers/", "https://www.ipatimup.pt/"):
+        try:
+            html = fetch(candidate_url)
+            if html:
+                break
+        except Exception as exc:
+            log.debug("IPATIMUP: failed to fetch %s: %s", candidate_url, exc)
+    if not html:
+        return []
+
+    offers = parse_link_board(
+        html, base_url=IPATIMUP_URL, source="ipatimup",
+        institution="Ipatimup – Instituto de Patologia e Imunologia Molecular da Universidade do Porto",
+        region="Porto",
+        href_pattern=r"(?:ipatimup\.pt/(?:opportunities|careers|job|position|bolsa|investigador)|euraxess\.ec\.europa\.eu/jobs)",
+        domains=("ipatimup.pt", "euraxess.ec.europa.eu", "i3s.up.pt"),
+        open_listing=True,
+    )
+    return [o for o in offers if not o.deadline or o.deadline >= today_iso]
+
+
+def inescc(today: dt.date | None = None) -> list[Offer]:
+    """Scrape open positions from INESC Coimbra."""
+    today = today or dt.date.today()
+    today_iso = today.isoformat()
+    html = ""
+    for candidate_url in (INESCC_URL, "https://www.inescc.pt/emprego/", "https://www.inescc.pt/en/"):
+        try:
+            html = fetch(candidate_url)
+            if html:
+                break
+        except Exception as exc:
+            log.debug("INESC Coimbra: failed to fetch %s: %s", candidate_url, exc)
+    if not html:
+        return []
+
+    offers = parse_link_board(
+        html, base_url=INESCC_URL, source="inescc",
+        institution="INESC Coimbra – Instituto de Engenharia de Sistemas e Computadores de Coimbra",
+        region="Centro",
+        href_pattern=r"(?:inescc\.pt/(?:bolsas?|emprego|job|position|investigad|recrutamento|concurso)|diariodarepublica\.pt|dre\.pt)",
+        domains=("inescc.pt", "uc.pt", "diariodarepublica.pt", "dre.pt"),
+        open_listing=True,
+    )
+    return [o for o in offers if not o.deadline or o.deadline >= today_iso]
+
+
+def cintesis(today: dt.date | None = None) -> list[Offer]:
+    """Scrape open calls/positions from CINTESIS (Center for Health Technology and Services Research)."""
+    today = today or dt.date.today()
+    today_iso = today.isoformat()
+    html = ""
+    for candidate_url in (CINTESIS_URL, "https://cintesis.eu/recrutamento/", "https://cintesis.eu/en/news/"):
+        try:
+            html = fetch(candidate_url)
+            if html:
+                break
+        except Exception as exc:
+            log.debug("CINTESIS: failed to fetch %s: %s", candidate_url, exc)
+    if not html:
+        return []
+
+    offers = parse_link_board(
+        html, base_url=CINTESIS_URL, source="cintesis",
+        institution="CINTESIS – Centro de Investigação em Tecnologias e Serviços de Saúde",
+        region="Porto",
+        href_pattern=r"(?:cintesis\.eu/(?:en/calls?|recrutamento|bolsas?|job|position|investigad|calls?)|diariodarepublica\.pt|dre\.pt)",
+        domains=("cintesis.eu", "up.pt", "ua.pt", "diariodarepublica.pt", "dre.pt"),
+        open_listing=True,
+    )
+    return [o for o in offers if not o.deadline or o.deadline >= today_iso]
 
 
 def gimm(today: dt.date | None = None) -> list[Offer]:
@@ -266,3 +349,83 @@ def uc_portuguesa(today: dt.date | None = None) -> list[Offer]:
             extra={"listing_url": UCP_CLSBE_URL},
         ))
     return offers
+
+
+def ipatimup(today: dt.date | None = None) -> list[Offer]:
+    """Scrape open positions from IPATIMUP (Institute of Molecular Pathology and Immunology, U.Porto)."""
+    today = today or dt.date.today()
+    today_iso = today.isoformat()
+    # IPATIMUP publishes positions on their /opportunities/ page as a list of
+    # article/li items; also try /careers/ and /en/opportunities/ as fallbacks.
+    html = ""
+    for candidate_url in (IPATIMUP_URL, "https://www.ipatimup.pt/careers/", "https://www.ipatimup.pt/"):
+        try:
+            html = fetch(candidate_url)
+            if html:
+                break
+        except Exception as exc:
+            log.debug("IPATIMUP: failed to fetch %s: %s", candidate_url, exc)
+    if not html:
+        return []
+
+    offers = parse_link_board(
+        html, base_url=IPATIMUP_URL, source="ipatimup",
+        institution="Ipatimup – Instituto de Patologia e Imunologia Molecular da Universidade do Porto",
+        region="Porto",
+        href_pattern=r"(?:ipatimup\.pt/(?:opportunities|careers|job|position|bolsa|investigador)|euraxess\.ec\.europa\.eu/jobs)",
+        domains=("ipatimup.pt", "euraxess.ec.europa.eu", "i3s.up.pt"),
+        open_listing=True,
+    )
+    return [o for o in offers if not o.deadline or o.deadline >= today_iso]
+
+
+def inescc(today: dt.date | None = None) -> list[Offer]:
+    """Scrape open positions from INESC Coimbra."""
+    today = today or dt.date.today()
+    today_iso = today.isoformat()
+    html = ""
+    for candidate_url in (INESCC_URL, "https://www.inescc.pt/emprego/", "https://www.inescc.pt/en/"):
+        try:
+            html = fetch(candidate_url)
+            if html:
+                break
+        except Exception as exc:
+            log.debug("INESC Coimbra: failed to fetch %s: %s", candidate_url, exc)
+    if not html:
+        return []
+
+    offers = parse_link_board(
+        html, base_url=INESCC_URL, source="inescc",
+        institution="INESC Coimbra – Instituto de Engenharia de Sistemas e Computadores de Coimbra",
+        region="Centro",
+        href_pattern=r"(?:inescc\.pt/(?:bolsas?|emprego|job|position|investigad|recrutamento|concurso)|diariodarepublica\.pt|dre\.pt)",
+        domains=("inescc.pt", "uc.pt", "diariodarepublica.pt", "dre.pt"),
+        open_listing=True,
+    )
+    return [o for o in offers if not o.deadline or o.deadline >= today_iso]
+
+
+def cintesis(today: dt.date | None = None) -> list[Offer]:
+    """Scrape open calls/positions from CINTESIS (Center for Health Technology and Services Research)."""
+    today = today or dt.date.today()
+    today_iso = today.isoformat()
+    html = ""
+    for candidate_url in (CINTESIS_URL, "https://cintesis.eu/recrutamento/", "https://cintesis.eu/en/news/"):
+        try:
+            html = fetch(candidate_url)
+            if html:
+                break
+        except Exception as exc:
+            log.debug("CINTESIS: failed to fetch %s: %s", candidate_url, exc)
+    if not html:
+        return []
+
+    offers = parse_link_board(
+        html, base_url=CINTESIS_URL, source="cintesis",
+        institution="CINTESIS – Centro de Investigação em Tecnologias e Serviços de Saúde",
+        region="Porto",
+        href_pattern=r"(?:cintesis\.eu/(?:en/calls?|recrutamento|bolsas?|job|position|investigad|calls?)|diariodarepublica\.pt|dre\.pt)",
+        domains=("cintesis.eu", "up.pt", "ua.pt", "diariodarepublica.pt", "dre.pt"),
+        open_listing=True,
+    )
+    return [o for o in offers if not o.deadline or o.deadline >= today_iso]
