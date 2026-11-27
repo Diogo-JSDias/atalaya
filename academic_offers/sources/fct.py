@@ -61,7 +61,7 @@ FUNDING_TYPES = (
     (re.compile(r"bolsa(?:s)?(?:\s+de\s+investiga[cç][ãa]o|\s+de\s+doutoramento)?", re.I),
      "Bolsas"),
     (re.compile(r"infraestruturas?|computa[cç][ãa]o\s+avan[cç]ada", re.I), "Infraestruturas"),
-    (re.compile(r"projetos?(?:\s+(?:de\s+)?i\s*&\s*d|\s+de\s+investiga[cç][ãa]o|\s+explorat[oó]rios|\s+icdt)?", re.I),
+    (re.compile(r"(?:projetos?|projectos?)(?:\s+(?:de\s+)?i\s*&\s*d|\s+de\s+investiga[cç][ãa]o|\s+explorat[oó]rios|\s+icdt)?", re.I),
      "Projetos I&D"),
     (re.compile(r"institui[cç][õo]es?\s+i\s*&\s*d", re.I), "Instituições I&D"),
     (re.compile(r"pr[eé]mios?", re.I), "Prémios"),
