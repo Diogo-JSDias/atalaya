@@ -13,6 +13,7 @@ from urllib.parse import parse_qs, urlencode, urljoin, urlparse, urlunparse
 
 from bs4 import BeautifulSoup
 
+from ..dates import first_date
 from ..http import fetch
 from ..models import Offer
 
@@ -20,7 +21,7 @@ log = logging.getLogger(__name__)
 
 LIST_URL = "https://noticias.up.pt/oportunidades/?prazo=abertas"
 MAX_PAGES = 5
-DATE_PT = re.compile(r"(?:até|prazo(?: de candidatura)?)\s*[:：]?\s*(\d{1,2})[./-](\d{1,2})[./-](20\d{2})", re.I)
+DEADLINE_PREFIX = re.compile(r"(?:até|prazo(?: de candidatura)?)\s*[:：]?\s*", re.I)
 ACADEMIC = re.compile(
     r"professor|docente|investigador|investiga[cç][ãa]o|"
     r"bolsa(?:s)?(?:\s+(?:de\s+)?(?:investiga[cç][ãa]o|p[oó]s[- ]?doutoramento|doutoramento))?|"
@@ -36,14 +37,13 @@ def _official_url(url: str) -> bool:
 
 
 def _deadline(text: str) -> str | None:
-    match = DATE_PT.search(" ".join(text.split()))
-    if not match:
-        return None
-    day, month, year = (int(value) for value in match.groups())
-    try:
-        return dt.date(year, month, day).isoformat()
-    except ValueError:
-        return None
+    clean = " ".join(text.split())
+    for label in DEADLINE_PREFIX.finditer(clean):
+        # Parse only the text immediately after an explicit deadline label.
+        value = first_date(clean[label.end():label.end() + 90])
+        if value:
+            return value
+    return None
 
 
 def _posts(title: str) -> int:
