@@ -123,6 +123,16 @@ class FCTSourceTests(unittest.TestCase):
                                     "Concurso Estímulo ao Emprego Científico Individual")
         self.assertEqual(details["funding_type"], "Emprego científico")
 
+    def test_title_category_recognises_advanced_computing_infrastructure(self):
+        details = parse_detail_page("<main><p>Concurso aberto.</p></main>",
+                                    "Concurso de Projetos de Computação Avançada")
+        self.assertEqual(details["funding_type"], "Infraestruturas")
+
+    def test_title_category_recognises_icdt_projects(self):
+        details = parse_detail_page("<main><p>Concurso aberto.</p></main>",
+                                    "Concurso para Projetos ICDT em todos os Domínios Científicos")
+        self.assertEqual(details["funding_type"], "Projetos I&D")
+
     def test_official_fct_domain_maps_to_broad_site_field(self):
         offer = Offer(source="fct", kind="call", title="Concurso multidisciplinar",
                       url="https://www.fct.pt/concursos/teste/",
