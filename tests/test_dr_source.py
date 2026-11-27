@@ -39,7 +39,8 @@ class DiarioRepublicaSourceTests(unittest.TestCase):
         self.assertEqual(parse_feed("<rss>"), [])
 
     def test_duplicate_links_are_removed(self):
-        duplicate = FEED.replace("</channel>", FEED.split("<item>", 1)[1].split("</item>", 1)[0].join(["<item>", "</item>"]) + "</channel>")
+        first_item = FEED.split("<item>", 1)[1].split("</item>", 1)[0]
+        duplicate = FEED.replace("</channel>", "<item>" + first_item + "</item></channel>")
         self.assertEqual(len(parse_feed(duplicate)), 1)
 
 
