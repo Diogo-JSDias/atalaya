@@ -82,7 +82,7 @@ def parse_listing(html: str, base_url: str = LIST_URL) -> list[Offer]:
                     break
                 card = parent
                 classes = " ".join(card.get("class", []))
-                if card.name == "li" or re.search(r"\\b(card|opportunit|post|item)\\b", classes, re.I):
+                if card.name == "li" or re.search(r"\b(card|opportunit|post|item)\b", classes, re.I):
                     break
             cards.append((card, link))
 
