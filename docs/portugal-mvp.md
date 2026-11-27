@@ -4,6 +4,7 @@ This fork is being adapted incrementally. The Spanish sources remain unchanged.
 
 ## Implemented
 
+- Diário da República: registered a first-pass scraper for the official RSS index of the 2nd series (all parts, HTML). It filters likely recruitment/research notices by title and preserves the original notice URL. This is intentionally a candidate detector, not a legally complete vacancy classifier; verify each notice and deadline at source.
 - Portuguese month names are recognised by `academic_offers.dates.first_date`.
 - The classifier recognises a first set of Portuguese academic/research role labels, including professor catedrático, professor associado, professor auxiliar, investigador principal/auxiliar, pós-doutoramento and doutoramento.
 - Regression tests cover Portuguese month names and the numeric date format commonly used in Portugal.
@@ -33,7 +34,7 @@ An experimental parser exists at `academic_offers/sources/portugal.py`, but it i
 
 ## Next milestones
 
-1. Validate an official Diário da República feed/API and implement it as a separate source.
+1. Validate the RSS parser against several real daily issues; improve notice filtering and extract institutions, deadlines and original notice metadata.
 2. Add explicit Portuguese deadline rules only after checking the relevant notice wording and applicable legal rules.
 3. Validate BEP automated access or obtain an authorised feed.
 4. Add FCT calls and institutional career pages with source-specific tests.
