@@ -57,7 +57,7 @@ class PortugalTargetsTests(unittest.TestCase):
         html = """
         <main>
           <div class="call"><a href="/calls/call/3">Assistant Researcher Hiring</a>
-          <span>Open - Jury Selection</span></div>
+          <span>Open - Applications</span></div>
           <div class="call"><a href="/calls/call/4">Postdoctoral Researcher</a>
           <span>Closed</span></div>
         </main>"""
@@ -67,6 +67,12 @@ class PortugalTargetsTests(unittest.TestCase):
             domains=("lip.pt",), open_listing=True, require_open_marker=True,
         )
         self.assertEqual([o.title for o in offers], ["Assistant Researcher Hiring"])
+
+    def test_lip_excludes_calls_already_in_jury_selection(self):
+        html = "<main><h1>Assistant Researcher Hiring</h1><p>Open - Jury Selection</p></main>"
+        with patch.object(pt, "fetch", return_value=html):
+            offers = pt.lip(today=dt.date(2026, 11, 27))
+        self.assertEqual(offers, [])
 
     def test_ua_technical_portal_keeps_only_non_expired_research_support_roles(self):
         html = """
