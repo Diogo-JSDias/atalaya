@@ -19,7 +19,7 @@
 | 4 | Universidade de Coimbra | 342 | `uc-apply` | Partial: central UC Apply index covers scholarships, researchers and teaching; not every faculty/technical channel |
 | 5 | Universidade de Aveiro | 425 | `ua-investigacao`, `ua-docentes`, `ua-tecnico` | Partial: central researcher, teaching and technical/administrative channels; associated units remain |
 | 6 | Universidade do Minho | 572 | `uminho-eeg` | Partial: EEG only; central portal currently has no open academic/research calls and its detail flow needs validation |
-| 7 | Universidade Católica Portuguesa | 791–800 | `ucp-clsbe` | Partial: Católica-Lisbon research/teaching/doctoral scholarship page only; Porto, Braga and other schools remain |
+| 7 | Universidade Católica Portuguesa | 791–800 | `ucp-clsbe`, `ucp-medicina` | Partial: Católica-Lisbon plus the Faculty of Medicine in Lisboa; Porto, Braga and other schools remain |
 | 8 | ISCTE – Instituto Universitário de Lisboa | 851–900 | `iscte` | Partial: central recruitment portal and Iscte Knowledge & Innovation association; school/unit coverage remains |
 | 9 | Universidade da Beira Interior (UBI) | 901–950 | `ubi-docentes`, `ubi-investigadores` | Partial: separate teaching and researcher recruitment sections; researcher section had no open rows at review |
 | 10 | Universidade do Algarve (UAlg) | 1001–1200 | `ualg` | Partial/direct source: docente and researcher competitions |
@@ -78,4 +78,4 @@ For each new adapter, use the official careers/recruitment page, retain the orig
 ### Atalaia coverage checked
 - Active source registry: `academic_offers/sources/__init__.py`
 - Current source scope: `README.md`
-- Current wave status: Aveiro, Iscte, Católica-Lisbon, GIMM, INL and LIP feeds are integrated; UBI researcher and NOVA IMS sources were added in the second wave, followed by NOVA FCSH in the third wave.
+- Current wave status: Aveiro, Iscte, Católica-Lisbon, GIMM, INL and LIP feeds are integrated; UBI researcher and NOVA IMS sources were added in the second wave, followed by NOVA FCSH and Católica Faculty of Medicine feeds.
