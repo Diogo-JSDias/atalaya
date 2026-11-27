@@ -1,6 +1,6 @@
 # Atalaya: plazas académicas en España
 
-*Atalaya* (Spanish for "watchtower"): one lookout over academic posts and research funding across Spain.
+*Atalaya* (Spanish for "watchtower"): one lookout over academic posts and research funding across Spain: [https://pacocp.es/atalaya/](https://pacocp.es/atalaya/)
 Made by [Paco Carrillo-Pérez](https://pacocp.es) as a non-commercial side project.
 
 Every day Atalaya collects open faculty posts, research jobs and funding calls from official bulletins,
