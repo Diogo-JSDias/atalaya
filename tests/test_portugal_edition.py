@@ -14,7 +14,7 @@ class PortugalEditionTests(unittest.TestCase):
     def test_only_portuguese_and_european_sources_are_active(self):
         self.assertEqual(
             {source.key for source in SOURCES},
-            {"dr", "fct", "ulisboa", "uporto", "ualg", "uc-apply", "uminho", "uminho-eeg", "novafct-investigadores", "ubi-docentes", "ubi-investigadores", "nova-ims", "nova-fcsh", "ucp-medicina", "ucp-porto", "ucp-fch", "gimm", "inl", "iscte", "lip", "ua-investigacao", "ua-docentes", "ua-tecnico", "ucp-clsbe", "inesc-tec", "algoritmi", "ieeta", "inesc-id", "itqb-nova", "eu-ft"},
+            {"dr", "fct", "ulisboa", "ist", "uporto", "ualg", "uc-apply", "uminho", "uminho-eeg", "novafct-investigadores", "ubi-docentes", "ubi-investigadores", "nova-ims", "nova-fcsh", "ucp-medicina", "ucp-porto", "ucp-fch", "gimm", "inl", "iscte", "lip", "ua-investigacao", "ua-docentes", "ua-tecnico", "ucp-clsbe", "inesc-tec", "algoritmi", "ieeta", "inesc-id", "itqb-nova", "eu-ft"},
         )
 
     @patch("academic_offers.__main__.store.last_runs", return_value={})
@@ -25,6 +25,7 @@ class PortugalEditionTests(unittest.TestCase):
             {"source": "dr", "id": "portuguese-dr", "title": "Aviso português"},
             {"source": "fct", "id": "portuguese-fct", "title": "Concurso FCT"},
             {"source": "ulisboa", "id": "ulisboa-offer", "title": "Oferta ULisboa"},
+            {"source": "ist", "id": "ist-offer", "title": "Oferta IST"},
             {"source": "uporto", "id": "uporto-offer", "title": "Oferta U.Porto"},
             {"source": "ualg", "id": "ualg-offer", "title": "Oferta UAlg"},
             {"source": "uc-apply", "id": "coimbra-offer", "title": "Bolsa UC"},
@@ -56,10 +57,10 @@ class PortugalEditionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             count = build_site(object(), dt.date(2026, 11, 27), Path(tmp))
             rows = json.loads((Path(tmp) / "offers.json").read_text(encoding="utf-8"))
-        self.assertEqual(count, 30)
+        self.assertEqual(count, 31)
         self.assertEqual(
             {row["source"] for row in rows},
-            {"dr", "fct", "ulisboa", "uporto", "ualg", "uc-apply", "uminho", "uminho-eeg", "novafct-investigadores", "ubi-docentes", "ubi-investigadores", "nova-ims", "nova-fcsh", "ucp-medicina", "ucp-porto", "ucp-fch", "gimm", "inl", "iscte", "lip", "ua-investigacao", "ua-docentes", "ua-tecnico", "ucp-clsbe", "inesc-tec", "algoritmi", "ieeta", "inesc-id", "itqb-nova", "eu-ft"},
+            {"dr", "fct", "ulisboa", "ist", "uporto", "ualg", "uc-apply", "uminho", "uminho-eeg", "novafct-investigadores", "ubi-docentes", "ubi-investigadores", "nova-ims", "nova-fcsh", "ucp-medicina", "ucp-porto", "ucp-fch", "gimm", "inl", "iscte", "lip", "ua-investigacao", "ua-docentes", "ua-tecnico", "ucp-clsbe", "inesc-tec", "algoritmi", "ieeta", "inesc-id", "itqb-nova", "eu-ft"},
         )
         self.assertFalse(any(row["id"] == "legacy-spanish" for row in rows))
 

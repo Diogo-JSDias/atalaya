@@ -37,6 +37,7 @@ O GitHub Pages num plano gratuito exige um repositório público.
 | `dr` | Diário da República, 2.ª Série (RSS) | Avisos de recrutamento, docência e investigação; filtro inicial por título. |
 | `fct` | Fundação para a Ciência e a Tecnologia | Concursos abertos, com enriquecimento das páginas oficiais de detalhe. |
 | `ulisboa` | Universidade de Lisboa | Recrutamento académico e científico; inclui categoria, vagas, prazo e documento principal. |
+| `ist` | Instituto Superior Técnico – ULisboa (DRH) | Concursos de bolseiros, docentes de carreira e investigadores (carreira e DL 57/2016) na DRH do Técnico. |
 | `uporto` | Universidade do Porto | Arquivo de oportunidades abertas; bolsas de investigação e recrutamento académico. |
 | `ualg` | Universidade do Algarve | Procedimentos concursais de docentes e investigadores, com datas e documentos oficiais. |
 | `uc-apply` | Universidade de Coimbra | UC Apply; bolsas de investigação, docentes e investigadores com candidaturas abertas. |
