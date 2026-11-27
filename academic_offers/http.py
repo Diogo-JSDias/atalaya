@@ -63,7 +63,9 @@ def _robots_for(scheme: str, host: str) -> RobotFileParser:
                 continue
 
             if 200 <= r.status_code < 300:
-                if len(r.content) > 1024 * 1024:
+                raw_content = getattr(r, "content", None)
+                size = len(raw_content) if isinstance(raw_content, (bytes, bytearray)) else len(r.text.encode("utf-8", errors="ignore"))
+                if size > 1024 * 1024:
                     log.warning("robots.txt for %s exceeds 1 MB; disallowing the host", host)
                 else:
                     rp = RobotFileParser()

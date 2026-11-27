@@ -78,6 +78,7 @@ class StoreTests(unittest.TestCase):
                 m.datetime.now.return_value = dt.datetime(2026, 11, 27, 11, 1, tzinfo=dt.timezone.utc)
                 store.save(db, {"crg": [a, b]}, dt.date(2026, 11, 27))
             titles = {o["title"] for o in store.current(db, dt.date(2026, 11, 27))}
+            db.close()
             self.assertEqual(titles, {"Postdoc A", "Postdoc B"})
 
 

@@ -197,6 +197,6 @@ def parse_listing(
 
 def scrape(today: dt.date | None = None) -> list[Offer]:
     today = today or dt.date.today()
-    offers = parse_listing(fetch(LIST_URL), today=today)
+    offers = parse_listing(fetch(LIST_URL), today=today, pdf_fetcher=fetch_bytes, pdf_extractor=extract_pdf_text)
     log.info("UCP FCH: %d potentially current recruitment notices", len(offers))
     return offers
