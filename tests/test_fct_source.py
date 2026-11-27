@@ -35,7 +35,7 @@ class FCTSourceTests(unittest.TestCase):
         <html><main>
           <a href="https://example.org/concurso">Concurso externo de investigação</a>
           <a href="/concursos/">Concursos e oportunidades da FCT</a>
-          <a href="/sobre/">Concurso institucional sem detalhe</a>
+          <a href="/sobre/">Sobre a FCT e contactos institucionais</a>
         </main></html>
         """
         self.assertEqual(parse_open_listing(html), [])
