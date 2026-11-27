@@ -35,6 +35,8 @@ class PortugalEditionTests(unittest.TestCase):
             {"source": "ubi-investigadores", "id": "ubi-researcher-offer", "title": "Oferta UBI Investigador"},
             {"source": "nova-ims", "id": "nova-ims-offer", "title": "Oferta NOVA IMS"},
             {"source": "nova-fcsh", "id": "nova-fcsh-offer", "title": "Oferta NOVA FCSH"},
+            {"source": "nova-reitoria", "id": "nova-reitoria-offer", "title": "Oferta Reitoria NOVA"},
+            {"source": "nova-law", "id": "nova-law-offer", "title": "Oferta NOVA Law"},
             {"source": "ucp-medicina", "id": "ucp-medicina-offer", "title": "Oferta Medicina UCP"},
             {"source": "gimm", "id": "gimm-offer", "title": "Oferta GIMM"},
             {"source": "inl", "id": "inl-offer", "title": "Oferta INL"},
@@ -63,7 +65,7 @@ class PortugalEditionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             count = build_site(object(), dt.date(2026, 11, 27), Path(tmp))
             rows = json.loads((Path(tmp) / "offers.json").read_text(encoding="utf-8"))
-        self.assertEqual(count, 37)
+        self.assertEqual(count, 39)
         self.assertEqual(
             {row["source"] for row in rows},
             {"dr", "fct", "ulisboa", "ist", "uporto", "ualg", "uc-apply", "uminho", "uminho-eeg", "novafct-investigadores", "ubi-docentes", "ubi-investigadores", "nova-ims", "nova-fcsh", "ucp-medicina", "ucp-porto", "ucp-fch", "gimm", "inl", "iscte", "lip", "ua-investigacao", "ua-docentes", "ua-tecnico", "ucp-clsbe", "inesc-tec", "algoritmi", "ieeta", "inesc-id", "itqb-nova", "ipatimup", "inescc", "cintesis", "eu-ft"},
