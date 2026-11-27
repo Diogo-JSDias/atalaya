@@ -59,12 +59,20 @@ def parse_open_listing(html: str, base_url: str = FCT_OPEN) -> list[Offer]:
         if url in seen:
             continue
 
-        # Cards are commonly nested in an article/list item; inspect a bounded
-        # number of ancestors to collect their visible deadline/summary text.
+        # Read the closest card-like ancestor only. Never climb to the document
+        # root: doing so would let another call elsewhere on the page make a
+        # navigation/footer link look relevant.
         card = a
-        for _ in range(4):
-            if card.parent and card.parent.name not in {"main", "body", "html"}:
-                card = card.parent
+        for _ in range(6):
+            parent = card.parent
+            if parent is None or parent.name in {"main", "body", "html", "[document]"}:
+                break
+            card = parent
+            classes = " ".join(card.get("class", []))
+            if card.name in {"article", "li"} or re.search(
+                r"\b(card|item|call|contest|opportunit|entry)\b", classes, re.I
+            ):
+                break
         card_text = " ".join(card.get_text(" ", strip=True).split())
         if not card_text:
             card_text = title
