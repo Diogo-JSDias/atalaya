@@ -62,7 +62,6 @@ FUNDING_TYPES = (
     (re.compile(r"projetos?(?:\s+(?:de\s+)?i\s*&\s*d|\s+de\s+investiga[cç][ãa]o|\s+explorat[oó]rios|\s+icdt)?", re.I),
      "Projetos I&D"),
     (re.compile(r"institui[cç][õo]es?\s+i\s*&\s*d", re.I), "Instituições I&D"),
-    (re.compile(r"infraestruturas?|computa[cç][ãa]o\s+avan[cç]ada", re.I), "Infraestruturas"),
     (re.compile(r"pr[eé]mios?", re.I), "Prémios"),
     (re.compile(r"internacional|parceria\s+europeia|coopera[cç][ãa]o\s+bilateral", re.I), "Internacional"),
 )
@@ -152,7 +151,7 @@ def _label_value(soup: BeautifulSoup, labels: set[str]) -> str:
     return ""
 
 
-def _funding_type(title: str, body: str, labelled_value: str = "") -> str:
+def _funding_type(title: str, labelled_value: str = "") -> str:
     # Prefer the title: generic mentions in explanatory prose should not override it.
     for pattern, category in FUNDING_TYPES:
         if pattern.search(title):
@@ -187,7 +186,7 @@ def parse_detail_page(html: str, title: str = "") -> dict[str, str | None]:
     domain_label = _label_value(soup, {"domínio científico", "domínios científicos", "área científica"})
     return {
         "deadline": _deadline(body),
-        "funding_type": _funding_type(title, body, funding_label) or None,
+        "funding_type": _funding_type(title, funding_label) or None,
         "scientific_domain": _scientific_domain(domain_label) or None,
     }
 
