@@ -57,13 +57,36 @@ def parse_listing(html: str, base_url: str = LIST_URL) -> list[Offer]:
     offers: list[Offer] = []
     seen: set[str] = set()
 
-    for article in soup.find_all("article"):
+    cards: list[tuple[object, object]] = []
+    articles = soup.find_all("article")
+    for article in articles:
         heading = article.find(["h1", "h2", "h3", "h4", "h5"])
         link = heading.find("a", href=True) if heading else None
         if not link:
             link = article.find("a", href=True)
-        if not link:
-            continue
+        if link:
+            cards.append((article, link))
+
+    # Some archive templates use div-based cards rather than semantic articles.
+    # Fall back to heading links and a bounded card ancestor; never use the
+    # whole main/body container as the text context for one opportunity.
+    if not cards:
+        for heading in soup.find_all(["h2", "h3", "h4", "h5"]):
+            link = heading.find("a", href=True)
+            if not link:
+                continue
+            card = heading
+            for _ in range(4):
+                parent = card.parent
+                if parent is None or parent.name in {"main", "body", "html", "[document]"}:
+                    break
+                card = parent
+                classes = " ".join(card.get("class", []))
+                if card.name == "li" or re.search(r"\\b(card|opportunit|post|item)\\b", classes, re.I):
+                    break
+            cards.append((card, link))
+
+    for article, link in cards:
         title = " ".join(link.get_text(" ", strip=True).split())
         if not title or not ACADEMIC.search(title):
             continue
