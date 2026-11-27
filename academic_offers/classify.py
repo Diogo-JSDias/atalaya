@@ -53,7 +53,7 @@ FIELD_RULES: list[tuple[str, str, str]] = [
 _COMPILED = [(re.compile(p, re.I), f, s) for p, f, s in FIELD_RULES]
 
 STAGE_RULES: list[tuple[str, str]] = [
-    (r"investigadores?\\s+dl\\s*57|investigador(?:a)?\\s+de\\s+n[ií]vel\\s+(?:inicial|interm[eé]dio)|investigador(?:a)?\\s+doutorado", "Researcher / DL 57"),
+    (r"investigadores?\s+dl\s*57|investigador(?:a)?\s+de\s+n[ií]vel\s+(?:inicial|interm[eé]dio)|investigador(?:a)?\s+doutorado", "Researcher / DL 57"),
     (r"catedr[áa]tic|full professor|profesor/a de investigaci|professor catedrático", "Senior faculty / research professor"),
     (r"titular de universidad|permanente laboral|cient[íi]fico/a titular|investigador/a cient|permanent position|group leader|tenure|professor associado|professor auxiliar|investigador principal|investigador auxiliar", "Permanent faculty / researcher"),
     (r"ayudante doctor|ram[óo]n y cajal|tenure.track|erc (starting|consolidator)|consolidator grant|research fellows|icrea", "Tenure-track & independent fellowships"),
