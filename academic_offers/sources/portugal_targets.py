@@ -31,10 +31,10 @@ UCP_CLSBE_URL = "https://clsbe.lisboa.ucp.pt/pt-pt/investigacao/posicoes-investi
 
 CLOSED = re.compile(
     r"candidaturas? encerrad[ao]s?|call (?:is )?closed|this call is now closed|"
-    r"recruitment process .*closed|prazo (?:terminou|encerrado)|estado\\s*:?\\s*fechado",
+    r"recruitment process .*closed|prazo (?:terminou|encerrado)|estado\s*:?\s*fechado",
     re.I,
 )
-OPEN = re.compile(r"\\b(open|aberto|aberta|a decorrer|accepting applications|current)\\b", re.I)
+OPEN = re.compile(r"\b(open|aberto|aberta|a decorrer|accepting applications|current)\b", re.I)
 ACADEMIC = re.compile(
     r"investigador|research|professor|docente|post.?doc|fellowship|bolsa|"
     r"scientist|phd|doutorad|assistant researcher|research assistant|"
@@ -150,7 +150,7 @@ def iscte(today: dt.date | None = None) -> list[Offer]:
     for url, source, institution in boards:
         offers.extend(parse_link_board(
             fetch(url), base_url=url, source=source, institution=institution,
-            region="Lisboa", href_pattern=r"/jobs/\\d+",
+            region="Lisboa", href_pattern=r"/jobs/\d+",
             domains=("iscte-iul.pt",), open_listing=False,
         ))
     return [o for o in offers if not o.deadline or o.deadline >= today.isoformat()]
@@ -161,7 +161,7 @@ def lip(today: dt.date | None = None) -> list[Offer]:
     offers = parse_link_board(
         fetch(LIP_URL), base_url=LIP_URL, source="lip",
         institution="LIP – Laboratório de Instrumentação e Física Experimental de Partículas",
-        region="Portugal", href_pattern=r"/calls/call/\\d+",
+        region="Portugal", href_pattern=r"/calls/call/\d+",
         domains=("lip.pt",), open_listing=True, require_open_marker=True,
     )
     return [o for o in offers if not o.deadline or o.deadline >= today.isoformat()]
@@ -177,7 +177,7 @@ def ua_research(today: dt.date | None = None) -> list[Offer]:
         offers.extend(parse_link_board(
             fetch(url), base_url=url, source=source,
             institution="Universidade de Aveiro", region="Aveiro",
-            href_pattern=r"(?:sgrh|jobs\\.ua\\.pt|api-portal\\.ua\\.pt)",
+            href_pattern=r"(?:sgrh|jobs\.ua\.pt|api-portal\.ua\.pt)",
             domains=("ua.pt",), open_listing=False,
         ))
     return [o for o in offers if not o.deadline or o.deadline >= today.isoformat()]
