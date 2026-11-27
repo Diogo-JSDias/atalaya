@@ -82,9 +82,9 @@ def _normalise_text(value: str) -> str:
     return " ".join(value.split()).strip(" :：")
 
 
-def _date_values(text: str) -> list[tuple[int, dt.date]]:
+def _date_values(text: str) -> list[tuple[int, int, dt.date]]:
     """Return date tokens with their offsets, ignoring impossible calendar dates."""
-    found: list[tuple[int, dt.date]] = []
+    found: list[tuple[int, int, dt.date]] = []
     for pattern, order in ((DATE_DMY, "dmy"), (DATE_ISO, "iso"), (DATE_PT, "pt")):
         for match in pattern.finditer(text):
             try:
@@ -94,14 +94,14 @@ def _date_values(text: str) -> list[tuple[int, dt.date]]:
                     year, month, day = (int(value) for value in match.groups())
                 else:
                     day, month, year = int(match.group(1)), PT_MONTHS[match.group(2).lower()], int(match.group(3))
-                found.append((match.start(), dt.date(year, month, day)))
+                found.append((match.start(), match.end(), dt.date(year, month, day)))
             except (TypeError, ValueError):
                 continue
     # Patterns do not normally overlap, but keep one value per date offset.
-    unique: dict[tuple[int, str], dt.date] = {}
-    for offset, value in found:
-        unique[(offset, value.isoformat())] = value
-    return sorted((offset, value) for (offset, _), value in unique.items())
+    unique: dict[tuple[int, int, str], dt.date] = {}
+    for start, end, value in found:
+        unique[(start, end, value.isoformat())] = value
+    return sorted((start, end, value) for (start, end, _), value in unique.items())
 
 
 def _deadline(text: str) -> str | None:
@@ -115,8 +115,8 @@ def _deadline(text: str) -> str | None:
             continue
         label_start = label.start() - left
         label_end = label.end() - left
-        after = [(offset, value) for offset, value in candidates if offset >= label_end]
-        before = [(offset, value) for offset, value in candidates if offset < label_start]
+        after = [(start, end, value) for start, end, value in candidates if start >= label_end]
+        before = [(start, end, value) for start, end, value in candidates if end <= label_start]
         label_text = label.group(0).casefold()
         is_submission_period = (
             "submissão" in label_text or "apresentação" in label_text or "período" in label_text
@@ -126,16 +126,16 @@ def _deadline(text: str) -> str | None:
             # Submission labels may precede a start/end range. Use its second
             # date only when a range connector sits between the first two dates;
             # otherwise take the nearest date and avoid unrelated result dates.
-            after.sort(key=lambda pair: pair[0])
-            selected = after[0][1]
+            after.sort(key=lambda item: item[0])
+            selected = after[0][2]
             if is_submission_period and len(after) > 1:
-                between = context[after[0][0] + len(after[0][1].strftime("%d/%m/%Y")):after[1][0]]
+                between = context[after[0][1]:after[1][0]]
                 if re.search(r"\\b(?:a|até|ao|to)\\b|[-–—]", between, re.I):
-                    selected = after[1][1]
+                    selected = after[1][2]
             return selected.isoformat()
         if before:
             # Some FCT pages place the closing date immediately before its label.
-            return max(before, key=lambda pair: pair[0])[1].isoformat()
+            return max(before, key=lambda item: item[0])[2].isoformat()
     return None
 
 
