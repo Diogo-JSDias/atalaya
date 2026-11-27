@@ -1,0 +1,5 @@
+beautifulsoup4==4.15.0
+httpx==0.28.1
+Jinja2==3.1.6
+MarkupSafe==3.0.4
+anthropic>=0.125,<2  # optional: AI extraction, only used when ANTHROPIC_API_KEY is set

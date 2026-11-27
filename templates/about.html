@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About · Atalaya</title>
+<style>
+  :root { --bg:#f7f6f2; --ink:#1d1d1b; --muted:#6b6a65; --line:#e4e2db; --accent:#b4451f; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#151513; --ink:#ecebe6; --muted:#a3a29b; --line:#33322e; --accent:#e07a50; } }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 68ch; margin: 0 auto; padding: 48px 24px 80px; }
+  h1, h2 { font-family: ui-serif, Georgia, serif; font-weight: 600; }
+  h1 { font-size: 30px; margin: 0 0 4px; } h2 { font-size: 20px; margin-top: 32px; }
+  a { color: var(--accent); }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  td, th { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 500; }
+  .muted { color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <p><a href="./">← Back to the offers</a></p>
+  <h1>About Atalaya</h1>
+  <p class="muted">An <em>atalaya</em> is a watchtower: one lookout over academic posts and research funding across Spain.</p>
+
+  <h2>What it does</h2>
+  <p>Once a day, Atalaya reads official bulletins, funders and institutional job boards, extracts the open
+     positions and calls, groups them by field and career stage, and links each one back to the original notice.
+     It is non-commercial and has no accounts or tracking.</p>
+
+  <h2>Accuracy</h2>
+  <p>Always check the original notice before applying. Deadlines marked “est.” are calculated from wording such as
+     “veinte días hábiles” and account for national and regional holidays, but not local ones. Where a notice lists
+     its posts only in a PDF annex, an AI model reads the annex; those fields can contain mistakes.</p>
+
+  <h2>Sources</h2>
+  <table>
+    <tr><th>Source</th><th>Last run</th><th>Items</th></tr>
+    {% for s in status %}<tr><td>{{ s.name }}</td><td>{{ s.run_at }}</td><td>{{ s.n }}{% if s.n == 0 and not s.may_be_empty %} ⚠️{% endif %}</td></tr>{% endfor %}
+  </table>
+
+  <h2>For site owners</h2>
+  <p>The crawler identifies itself as <code>AtalayaBot</code>, visits each page at most once a day, honours
+     <code>robots.txt</code> and <code>Crawl-delay</code>, and only reads public pages. If you'd like your institution
+     added, removed, or to provide a feed instead, please
+     <a href="{{ repo_url }}/issues">open an issue</a>.</p>
+
+  <h2>Data</h2>
+  <p>All current offers are available as <a href="offers.json">JSON</a>. Built {{ generated }}.</p>
+</main>
+</body>
+</html>
