@@ -67,6 +67,22 @@ class PortugalTargetsTests(unittest.TestCase):
         )
         self.assertEqual([o.title for o in offers], ["Assistant Researcher Hiring"])
 
+    def test_ua_technical_portal_keeps_only_non_expired_research_support_roles(self):
+        html = """
+        <main><ul class="job-list">
+          <li class="job"><a href="/Home/Detail/201">Contratação de Técnico Superior</a>
+          <span>Candidaturas até 03-12-2026</span></li>
+          <li class="job"><a href="/Home/Detail/202">Assistente Técnico</a>
+          <span>Candidaturas até 03-10-2026</span></li>
+        </ul></main>"""
+        offers = pt.parse_link_board(
+            html, base_url=pt.UA_TAG_URL, source="ua-tecnico",
+            institution="Universidade de Aveiro", region="Aveiro",
+            href_pattern=r"/Home/Detail/\d+", domains=("ua.pt",),
+        )
+        self.assertEqual(len(offers), 1)
+        self.assertEqual(offers[0].deadline, "2026-12-03")
+
     def test_ucp_table_uses_deadline_column_not_application_start(self):
         from unittest.mock import patch
         html = """
