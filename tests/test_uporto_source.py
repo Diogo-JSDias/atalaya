@@ -67,6 +67,20 @@ class UPortoSourceTests(unittest.TestCase):
         self.assertEqual(offer.url, "https://noticias.up.pt/oportunidades/duas-bolsas/")
         self.assertEqual(offer.n_posts, 2)
 
+    def test_parses_div_based_card_when_article_tag_is_absent(self):
+        html = """
+        <main>
+          <div class="opportunity-card">
+            <span>Bolsas</span>
+            <h3><a href="/oportunidades/div-card/">Bolsa de Investigação para Doutoramento</a></h3>
+            <p>Até 31.12.2026</p>
+          </div>
+        </main>
+        """
+        offers = parse_listing(html)
+        self.assertEqual(len(offers), 1)
+        self.assertEqual(offers[0].deadline, "2026-12-31")
+
     def test_ignores_external_links(self):
         html = """
         <article>
