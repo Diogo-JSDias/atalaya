@@ -15,7 +15,7 @@
 |---:|---|---:|---|---|
 | 1 | Universidade de Lisboa (ULisboa) | 237 | `ulisboa` | Partial: central academic/scientific index; school and institute sites still need individual coverage |
 | 2 | Universidade do Porto (U.Porto) | 255 | `uporto` | Partial: central opportunity archive; not every faculty or associated institute |
-| 3 | Universidade NOVA de Lisboa | 337 | `novafct-investigadores`, `nova-ims`, `nova-fcsh` | Partial: NOVA FCT, NOVA IMS and NOVA FCSH researcher recruitment; other schools and Reitoria channels remain |
+| 3 | Universidade NOVA de Lisboa | 337 | `novafct-investigadores`, `nova-ims`, `nova-fcsh`, `nova-reitoria`, `nova-law` | Partial: NOVA FCT, NOVA IMS, NOVA FCSH, Reitoria non-academic recruitment and NOVA School of Law research recruitment; other schools remain |
 | 4 | Universidade de Coimbra | 342 | `uc-apply` | Partial: central UC Apply index covers scholarships, researchers and teaching; not every faculty/technical channel |
 | 5 | Universidade de Aveiro | 425 | `ua-investigacao`, `ua-docentes`, `ua-tecnico` | Partial: central researcher, teaching and technical/administrative channels; associated units remain |
 | 6 | Universidade do Minho | 572 | `uminho-eeg` | Partial: EEG only; central portal currently has no open academic/research calls and its detail flow needs validation |
@@ -42,7 +42,7 @@ Ordered by the latest available Nature Index Portugal institution-output positio
 
 | Research organisation | Matched universities in top 10 | Existing Atalaia university coverage | Recommended treatment |
 |---|---|---|---|
-| GIMM | ULisboa; NOVA | ULisboa active; NOVA FCT, NOVA IMS and NOVA FCSH partial | GIMM has its own independent Atalaia feed; do not infer employer from university collaboration |
+| GIMM | ULisboa; NOVA | ULisboa active; NOVA FCT, NOVA IMS, NOVA FCSH, Reitoria and NOVA School of Law partial | GIMM has its own independent Atalaia feed; do not infer employer from university collaboration |
 | Champalimaud Foundation | NOVA | NOVA FCT and NOVA IMS partial | Keep as an independent target; the dynamic careers list still needs a stable data feed |
 | INL | U.Porto; UMinho | U.Porto active; UMinho EEG-only partial | INL has its own independent Atalaia feed |
 | LIP | ULisboa; U.Porto; Coimbra; UMinho | All four have partial sources | LIP has its own independent Atalaia feed; preserve LIP as employer and host institution separately |
@@ -50,11 +50,11 @@ Ordered by the latest available Nature Index Portugal institution-output positio
 
 ## Recommended acquisition order
 
-1. **Champalimaud Foundation** — find a stable index/API for the dynamically loaded careers list.
-2. **NOVA** — expand beyond NOVA FCT and NOVA IMS into Reitoria, FCSH, Medical School, ITQB, IHMT, Law, SBE and other schools; reject stale lists.
-3. **Católica Portuguesa** — extend beyond Católica-Lisbon into Porto, Braga and other regional schools where staff calls are published.
-4. **UMinho, ULisboa and U.Porto** — expand beyond existing central/school-level coverage with verified faculty and institute feeds.
-5. **LASI** — add sources from participating member units and preserve the employer/host attribution.
+1. **FCiências.ID and i3S** — the next high-priority research-employer feeds.
+2. **Champalimaud Foundation** — remain in stand-by until its dynamic offers API returns records or a stable alternative feed is identified.
+3. **NOVA and Católica Portuguesa** — continue extending coverage into Medical School, ITQB, IHMT, SBE, Porto, Braga and other schools.
+4. **UMinho, ULisboa and U.Porto** — add verified faculty and institute feeds beyond current central coverage.
+5. **LASI** — continue with other member units, preserving the actual employing institution.
 
 For each new adapter, use the official careers/recruitment page, retain the original notice URL and deadline, exclude expired/closed calls, fail visibly if the listing structure changes, and add offline parser tests before activation. Avoid inferring the employer from a university collaboration alone.
 
