@@ -16,7 +16,7 @@ log = logging.getLogger(__name__)
 
 # The published site (set by the GitHub workflow). Until it exists, point site owners at the author's page.
 SITE_URL = os.environ.get("ATALAYA_SITE_URL", "").rstrip("/")
-CONTACT_URL = f"{SITE_URL}/about.html" if SITE_URL else "https://pacocp.es"
+CONTACT_URL = f"{SITE_URL}/about.html" if SITE_URL else "https://github.com/Diogo-JSDias/atalaya"
 USER_AGENT = f"AtalayaBot/0.2 (+{CONTACT_URL}; once a day, non-commercial)"
 BOT_NAME = "AtalayaBot"
 DEFAULT_DELAY = 2.0
@@ -27,7 +27,7 @@ CACHE_TTL = 6 * 3600  # seconds
 _last_hit: dict[str, float] = {}
 _robots: dict[str, RobotFileParser | None] = {}
 _client = httpx.Client(
-    headers={"User-Agent": USER_AGENT, "Accept-Language": "es,en;q=0.8"},
+    headers={"User-Agent": USER_AGENT, "Accept-Language": "pt-PT,pt;q=0.9,en;q=0.8"},
     follow_redirects=True,
     timeout=45,
 )

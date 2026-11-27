@@ -2,11 +2,11 @@ name: Daily update
 
 on:
   schedule:
-    - cron: "30 7 * * *"   # 07:30 UTC, after the BOE is published (08:30/09:30 Madrid)
+    - cron: "30 7 * * *"   # Daily refresh from Portuguese and European official sources
   workflow_dispatch:        # "Run workflow" button in the Actions tab
   push:
     branches: [main]
-    paths: ["academic_offers/**", "tests/**", "templates/**", "requirements.txt", ".github/workflows/**"]
+    paths: ["academic_offers/**", "templates/**", "requirements.txt", ".github/workflows/**"]
 
 permissions:
   contents: write   # commit the updated database
@@ -50,6 +50,8 @@ jobs:
           git push
 
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site

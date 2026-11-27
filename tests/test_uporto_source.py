@@ -81,6 +81,26 @@ class UPortoSourceTests(unittest.TestCase):
         self.assertEqual(len(offers), 1)
         self.assertEqual(offers[0].deadline, "2026-12-31")
 
+    def test_div_cards_are_parsed_even_when_page_contains_other_articles(self):
+        html = """
+        <main>
+          <article class="news-story"><h2>Not an opportunity</h2></article>
+          <div class="opportunity-card">
+            <h3><a href="/oportunidades/fpceup-roots/">FPCEUP | Bolsa de Investigação ROOTS</a></h3>
+            <a href="/categoria/bolsas/">Bolsas</a>
+            <p>Até 10 de dezembro de 2026</p>
+          </div>
+          <div class="opportunity-card">
+            <h3><a href="/oportunidades/icbas-atlantida/">ICBAS | Bolsa Pós-Doutoramento ATLANTIDA II</a></h3>
+            <a href="/categoria/bolsas/">Bolsas</a>
+            <p>Até 14.12.2026</p>
+          </div>
+        </main>
+        """
+        offers = parse_listing(html)
+        self.assertEqual(len(offers), 2)
+        self.assertEqual({o.deadline for o in offers}, {"2026-12-10", "2026-12-14"})
+
     def test_ignores_external_links(self):
         html = """
         <article>

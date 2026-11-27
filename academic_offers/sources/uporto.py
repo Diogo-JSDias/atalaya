@@ -58,31 +58,47 @@ def parse_listing(html: str, base_url: str = LIST_URL) -> list[Offer]:
     seen: set[str] = set()
 
     cards: list[tuple[object, object]] = []
-    articles = soup.find_all("article")
-    for article in articles:
-        heading = article.find(["h1", "h2", "h3", "h4", "h5"])
-        link = heading.find("a", href=True) if heading else None
-        if not link:
-            link = article.find("a", href=True)
-        if link:
-            cards.append((article, link))
+    seen_links: set[str] = set()
 
-    # Some archive templates use div-based cards rather than semantic articles.
-    # Fall back to heading links and a bounded card ancestor; never use the
-    # whole main/body container as the text context for one opportunity.
+    # Build records from opportunity-title headings regardless of whether the
+    # publisher uses semantic <article> tags or div-based cards. Other article
+    # elements on the page must not suppress this fallback.
+    for heading in soup.find_all(["h1", "h2", "h3", "h4", "h5"]):
+        link = heading.find("a", href=True)
+        if not link or "/oportunidades/" not in link["href"]:
+            continue
+        if link["href"] in seen_links:
+            continue
+        seen_links.add(link["href"])
+        card = heading
+        for _ in range(8):
+            parent = card.parent
+            if parent is None or parent.name in {"main", "body", "html", "[document]"}:
+                break
+            card = parent
+            classes = " ".join(card.get("class", []))
+            if card.name in {"article", "li"} or re.search(
+                r"\b(card|opportunit|post|item|entry|views-row)\b", classes, re.I
+            ):
+                break
+        cards.append((card, link))
+
+    # A final fallback covers a changed template where titles are plain anchors.
     if not cards:
-        for heading in soup.find_all(["h2", "h3", "h4", "h5"]):
-            link = heading.find("a", href=True)
-            if not link:
+        for link in soup.select('a[href*="/oportunidades/"]'):
+            if link.get("href") in seen_links:
                 continue
-            card = heading
-            for _ in range(4):
+            seen_links.add(link.get("href"))
+            card = link
+            for _ in range(8):
                 parent = card.parent
                 if parent is None or parent.name in {"main", "body", "html", "[document]"}:
                     break
                 card = parent
                 classes = " ".join(card.get("class", []))
-                if card.name == "li" or re.search(r"\b(card|opportunit|post|item)\b", classes, re.I):
+                if card.name in {"article", "li"} or re.search(
+                    r"\b(card|opportunit|post|item|entry|views-row)\b", classes, re.I
+                ):
                     break
             cards.append((card, link))
 
@@ -139,7 +155,8 @@ def scrape(today: dt.date | None = None) -> list[Offer]:
     for page in range(MAX_PAGES):
         page_url = _page_url(page)
         html = fetch(page_url)
-        if not BeautifulSoup(html, "html.parser").find("article"):
+        soup = BeautifulSoup(html, "html.parser")
+        if not soup.select('a[href*="/oportunidades/"]'):
             break
         for offer in parse_listing(html, page_url):
             if offer.deadline and offer.deadline < today.isoformat():
