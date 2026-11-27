@@ -17,6 +17,14 @@ PE, LS, SS, HU = "Physical Sciences & Engineering", "Life & Health Sciences", "S
 
 FIELD_RULES: list[tuple[str, str, str]] = [
     # (regex, field, subfield)
+    # Official FCT scientific-domain labels, kept ahead of broad keyword rules.
+    (r"ciências agrárias", LS, "Agriculture, Food & Veterinary"),
+    (r"ciências da engenharia e tecnologias", PE, "Engineering & Technology"),
+    (r"ciências exatas", PE, "Physical & Mathematical Sciences"),
+    (r"humanidades", HU, "Humanities"),
+    (r"ciências médicas e da saúde", LS, "Health & Medicine"),
+    (r"ciências naturais", LS, "Natural Sciences"),
+    (r"ciências sociais", SS, "Social Sciences"),
     (r"did[áa]ctica|educaci[óo]n f[íi]sica|deport|ensino|pedagogia", SS, "Education"),
     (r"computaci|inteligencia artificial|inform[áa]tic|lenguajes y sistemas|computer|software|data scien|telem[áa]tic|arquitectura y tecnolog[íi]a de computadores", PE, "Computer Science & AI"),
     (r"veterinari|producci[óo]n animal|sanidad animal|medicina y cirug[íi]a animal|anatom[íi]a.*comparadas|agr[íi]col|agronom|edafolog|forestal|tecnolog[íi]a de alimentos|nutrici[óo]n y bromatolog", LS, "Agriculture, Food & Veterinary"),
