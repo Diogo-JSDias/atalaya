@@ -14,7 +14,7 @@ class PortugalEditionTests(unittest.TestCase):
     def test_only_portuguese_and_european_sources_are_active(self):
         self.assertEqual(
             {source.key for source in SOURCES},
-            {"dr", "fct", "ulisboa", "uporto", "ualg", "uc-apply", "uminho-eeg", "novafct-investigadores", "ubi-docentes", "gimm", "inl", "iscte", "lip", "ua-investigacao", "ua-docentes", "ucp-clsbe", "eu-ft"},
+            {"dr", "fct", "ulisboa", "uporto", "ualg", "uc-apply", "uminho-eeg", "novafct-investigadores", "ubi-docentes", "gimm", "inl", "iscte", "lip", "ua-investigacao", "ua-docentes", "ua-tecnico", "ucp-clsbe", "eu-ft"},
         )
 
     @patch("academic_offers.__main__.store.last_runs", return_value={})
@@ -37,13 +37,14 @@ class PortugalEditionTests(unittest.TestCase):
             {"source": "lip", "id": "lip-offer", "title": "Oferta LIP"},
             {"source": "ua-investigacao", "id": "ua-offer", "title": "Oferta UA"},
             {"source": "ua-docentes", "id": "ua-docente", "title": "Oferta UA Docente"},
+            {"source": "ua-tecnico", "id": "ua-tag", "title": "Oferta UA TAG"},
             {"source": "ucp-clsbe", "id": "ucp-offer", "title": "Oferta Católica"},
             {"source": "eu-ft", "id": "european-call", "title": "ERC call"},
         ]
         with tempfile.TemporaryDirectory() as tmp:
             count = build_site(object(), dt.date(2026, 11, 27), Path(tmp))
             rows = json.loads((Path(tmp) / "offers.json").read_text(encoding="utf-8"))
-        self.assertEqual(count, 17)
+        self.assertEqual(count, 18)
         self.assertEqual(
             {row["source"] for row in rows},
             {"dr", "fct", "ulisboa", "uporto", "ualg", "uc-apply", "uminho-eeg", "novafct-investigadores", "ubi-docentes", "gimm", "inl", "iscte", "lip", "ua-investigacao", "ua-docentes", "ucp-clsbe", "eu-ft"},
