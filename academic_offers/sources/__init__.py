@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from ..models import Offer
-from . import calls, dr, fct, uc_apply, ualg, ulisboa, uporto, uminho_eeg, novafct_investigadores, ubi_docentes, ubi_investigadores, nova_ims, nova_fcsh, ucp_medicina, ucp_porto, ucp_fch, portugal_targets
+from . import calls, dr, fct, uc_apply, ualg, ulisboa, uporto, uminho, uminho_eeg, novafct_investigadores, ubi_docentes, ubi_investigadores, nova_ims, nova_fcsh, ucp_medicina, ucp_porto, ucp_fch, portugal_targets
 
 
 @dataclass
@@ -35,6 +35,8 @@ SOURCES: list[Source] = [
            lambda today, _d: ualg.scrape(today), may_be_empty=True),
     Source("uc-apply", "Universidade de Coimbra – UC Apply (bolsas, docentes e investigadores)",
            lambda today, _d: uc_apply.scrape(today), may_be_empty=True),
+    Source("uminho", "Universidade do Minho – recrutamento central (docentes e investigadores)",
+           lambda today, _d: uminho.scrape(today), may_be_empty=True),
     Source("uminho-eeg", "Universidade do Minho – Escola de Economia, Gestão e Ciência Política (docentes/investigadores)",
            lambda today, _d: uminho_eeg.scrape(today), may_be_empty=True),
     Source("novafct-investigadores", "NOVA FCT – concursos de investigadores (apenas pessoal investigador)",

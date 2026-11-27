@@ -154,7 +154,7 @@ function matches(o, ignoreField) {
 function card(o) {
   const d = o.deadline ? days(o.deadline) : null;
   const dl = o.deadline
-    ? `<span class="dl ${d <= 7 ? "soon" : ""}">${d === 0 ? "Termina hoje" : d === 1 ? "Termina amanhã" : "Termina " + fmt(o.deadline)}${o.deadline_estimated ? '<span class="est">estimado a partir do aviso</span>' : ""}</span>`
+    ? `<span class="dl ${d <= 7 ? "soon" : ""}">${d === 0 ? "Termina hoje" : d === 1 ? "Termina amanhã" : "Termina " + fmt(o.deadline)}${o.deadline_estimated ? '<span class="est">prazo estimado a partir do aviso</span>' : ""}</span>`
     : `<span class="dl none">Prazo não indicado</span>`;
   const isNew = days(o.first_seen) >= -7 ? '<span class="tag new">Novo</span> ' : "";
   const posts = o.n_posts > 1 ? ` · ${o.n_posts} vagas` : "";
