@@ -6,6 +6,8 @@ from unittest.mock import patch
 from academic_offers.sources.uc_apply import (
     parse_detail_page, parse_listing, scrape, _deadline_from_text,
 )
+from academic_offers.classify import classify
+from academic_offers.models import Offer
 
 
 LISTING = """
@@ -85,6 +87,30 @@ class UCApplySourceTests(unittest.TestCase):
         self.assertEqual(details["area"], "Engenharia Química, Engenharia de Materiais, Química")
         self.assertEqual(details["code"], "IT137-26-485")
         self.assertEqual(details["published"], "2026-11-09")
+
+    def test_investigadores_dl57_get_distinct_career_stage(self):
+        offer = Offer(
+            source="uc-apply", kind="position",
+            title="Investigadores DL 57 — Investigador de nível inicial Arqueologia",
+            url="https://www.apply.uc.pt/procedure/abc123",
+            position_type="Investigadores DL 57",
+            area_raw="Arqueologia",
+        )
+        classified = classify(offer)
+        self.assertEqual(classified.stage, "Researcher / DL 57")
+        self.assertEqual(classified.field, "Humanities")
+
+    def test_portuguese_legal_sciences_map_to_law(self):
+        offer = Offer(
+            source="uc-apply", kind="position",
+            title="Docentes — Professor Auxiliar",
+            url="https://www.apply.uc.pt/procedure/def456",
+            area_raw="Ciências Jurídico-Civilísticas",
+            position_type="Docentes",
+        )
+        classified = classify(offer)
+        self.assertEqual(classified.field, "Social Sciences")
+        self.assertEqual(classified.subfield, "Law")
 
     @patch("academic_offers.sources.uc_apply.fetch")
     def test_enrichment_keeps_listing_record_when_detail_fails(self, mock_fetch):
