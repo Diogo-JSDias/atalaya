@@ -7,10 +7,9 @@ import logging
 import re
 from urllib.parse import urljoin
 
-import httpx
 from bs4 import BeautifulSoup
 
-from ..http import USER_AGENT, fetch
+from ..http import fetch, post_json
 from ..models import Offer
 
 log = logging.getLogger(__name__)
@@ -33,10 +32,13 @@ def eu_calls(today: dt.date | None = None) -> list[Offer]:
             "query": ("q.json", json.dumps(EU_QUERY), "application/json"),
             "languages": ("l.json", '["en"]', "application/json"),
         }
-        resp = httpx.post(EU_SEARCH, params={"apiKey": "SEDIA", "text": text, "pageSize": 100, "pageNumber": 1},
-                          files=files, headers={"User-Agent": USER_AGENT}, timeout=60)
-        resp.raise_for_status()
-        for r in resp.json().get("results", []):
+        data = post_json(
+            EU_SEARCH,
+            params={"apiKey": "SEDIA", "text": text, "pageSize": 100, "pageNumber": 1},
+            files=files,
+            timeout=60,
+        )
+        for r in data.get("results", []):
             m = r["metadata"]
             ident = (m.get("identifier") or [""])[0]
             if not ident or ident in seen or text not in ident:

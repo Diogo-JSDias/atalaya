@@ -7,7 +7,7 @@ import logging
 import os
 import time
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import urljoin, urlparse
 from urllib.robotparser import RobotFileParser
 
 import httpx
@@ -20,6 +20,7 @@ CONTACT_URL = f"{SITE_URL}/about.html" if SITE_URL else "https://github.com/Diog
 USER_AGENT = f"AtalayaBot/0.2 (+{CONTACT_URL}; once a day, non-commercial)"
 BOT_NAME = "AtalayaBot"
 DEFAULT_DELAY = 2.0
+MAX_REDIRECTS = 10
 
 CACHE_DIR = Path(".cache/http")
 CACHE_TTL = 6 * 3600  # seconds
@@ -102,13 +103,30 @@ def _cached(method: str, url: str, suffix: str) -> Path:
     return CACHE_DIR / (hashlib.sha1(f"{method} {url}".encode()).hexdigest() + suffix)
 
 
-def _request(url: str, method: str, headers: dict | None, attempts: int = 4) -> httpx.Response:
+def _send_with_retries(
+    url: str,
+    method: str,
+    headers: dict | None,
+    *,
+    params: dict | None = None,
+    files: dict | None = None,
+    timeout: float | None = None,
+    attempts: int = 4,
+) -> httpx.Response:
     delay = _check(url)
     host = urlparse(url).netloc
+    req_kwargs: dict = {
+        "headers": headers,
+        "params": params,
+        "files": files,
+        "follow_redirects": False,
+    }
+    if timeout is not None:
+        req_kwargs["timeout"] = timeout
     for attempt in range(1, attempts + 1):
         _wait(host, delay)
         try:
-            resp = _client.request(method, url, headers=headers)
+            return _client.request(method, url, **req_kwargs)
         except (httpx.ConnectError, httpx.ReadTimeout) as e:
             # Some load-balanced public-sector sites (e.g. sede.csic.gob.es) have one backend that
             # serves an incomplete certificate chain or stalls. Certificates are still verified;
@@ -116,10 +134,43 @@ def _request(url: str, method: str, headers: dict | None, attempts: int = 4) -> 
             if attempt == attempts:
                 raise
             log.info("retrying %s after %s", url, type(e).__name__)
+    raise RuntimeError("unreachable")
+
+
+def _request(
+    url: str,
+    method: str,
+    headers: dict | None,
+    *,
+    params: dict | None = None,
+    files: dict | None = None,
+    timeout: float | None = None,
+    attempts: int = 4,
+) -> httpx.Response:
+    current_url = url
+    current_method = method
+    current_params = params
+    current_files = files
+    for _ in range(MAX_REDIRECTS + 1):
+        resp = _send_with_retries(
+            current_url,
+            current_method,
+            headers,
+            params=current_params,
+            files=current_files,
+            timeout=timeout,
+            attempts=attempts,
+        )
+        if resp.is_redirect:
+            current_url = urljoin(current_url, resp.headers["location"])
+            current_params = None
+            if resp.status_code in (301, 302, 303) and current_method != "HEAD":
+                current_method = "GET"
+                current_files = None
             continue
         resp.raise_for_status()
         return resp
-    raise RuntimeError("unreachable")
+    raise httpx.TooManyRedirects(f"Exceeded {MAX_REDIRECTS} redirects", request=resp.request)
 
 
 def fetch(url: str, *, method: str = "GET", headers: dict | None = None, use_cache: bool = True) -> str:
@@ -141,3 +192,15 @@ def fetch_bytes(url: str, *, use_cache: bool = True) -> bytes:
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     path.write_bytes(data)
     return data
+
+
+def post_json(
+    url: str,
+    *,
+    params: dict | None = None,
+    files: dict | None = None,
+    headers: dict | None = None,
+    timeout: float | None = None,
+) -> dict:
+    """POST to an API endpoint and return the decoded JSON, respecting robots.txt and Crawl-delay."""
+    return _request(url, "POST", headers, params=params, files=files, timeout=timeout).json()
