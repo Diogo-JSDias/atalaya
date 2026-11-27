@@ -56,6 +56,16 @@ An experimental parser exists at `academic_offers/sources/portugal.py`, but it i
 - A failed source must not erase previously collected offers.
 - Honour robots.txt, published crawl delays and source terms; use a descriptive User-Agent and a low request frequency.
 
+## GitHub Pages: one-time repository setup
+
+The scrape, database update and static-site build run successfully in GitHub Actions. The deployment step cannot create the Pages site with the workflow's default `GITHUB_TOKEN`: GitHub requires an administrator-capable token to create the site. Enable it once in the repository settings:
+
+1. Open **Settings → Pages**.
+2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+3. Save the setting. The next daily workflow run can then publish the generated `site/` directory.
+
+Do not add a personal access token to the repository just for this unless you deliberately want automated repository administration. A one-time settings change is safer. GitHub documents Pages availability on public repositories with GitHub Free and the Actions publishing source: https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site.
+
 ## Next milestones
 
 1. Validate the DR RSS and FCT parsers against live responses in GitHub Actions; measure false positives and pagination coverage.
