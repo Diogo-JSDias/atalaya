@@ -9,7 +9,7 @@ LISTING = """
 <html><body>
 <h1>CONCURSOS PARA INVESTIGADORES</h1>
 <p>1 vaga de Investigador(a) Doutorado(a)</p>
-<a href="/static/documentos/concursos/investigadores/Aviso%20%28extrato%29%20n.%C2%BA%2025498_2026_2.pdf">
+<a href="/static/documentos/concursos/investigadores/Aviso%20%28extrato%29%20n.%C2%BA%2027999_2026_2.pdf">
   Aviso (Extrato) n.º 25498/2026/2
 </a>
 <a href="/static/documentos/concursos/investigadores/Aviso%20Integral%2025498.pdf">
@@ -82,7 +82,7 @@ class NOVAFCSHTests(unittest.TestCase):
         self.assertEqual(offer.extra["notice_number"], "27999/2026/2")
         self.assertEqual(
             offer.url,
-            "https://www.fcsh.unl.pt/static/documentos/concursos/investigadores/Aviso%20%28extrato%29%20n.%C2%BA%2025498_2026_2.pdf",
+            "https://www.fcsh.unl.pt/static/documentos/concursos/investigadores/Aviso%20%28extrato%29%20n.%C2%BA%2027999_2026_2.pdf",
         )
 
     def test_stale_faculty_listing_does_not_resurface_expired_call(self):
