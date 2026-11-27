@@ -2,7 +2,7 @@
 
 *Atalaia* é um portal de oportunidades académicas e científicas em Portugal, adaptado a partir do projeto aberto [Atalaya](https://github.com/pacocp/atalaya), originalmente criado por [Francisco Carrillo-Pérez](https://pacocp.es).
 
-Todos os dias, a Atalaia recolhe concursos para docentes, vagas de investigação e bolsas a partir de fontes oficiais, fundações, centros de investigação e universidades portuguesas. As oportunidades são classificadas por área e fase de carreira e publicadas num site estático e filtrável. Cada entrada liga ao aviso original.
+Todos os dias, a Atalaia recolhe concursos para docentes, vagas de investigação e bolsas a partir de fontes oficiais portuguesas, fundações e universidades, complementados por concursos europeus ERC e MSCA. As oportunidades são classificadas por área e fase de carreira e publicadas num site estático e filtrável. Cada entrada liga ao aviso original.
 
 ## Run locally
 
@@ -10,7 +10,7 @@ Todos os dias, a Atalaia recolhe concursos para docentes, vagas de investigaçã
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python -m academic_offers                 # scrape all sources, update data/, build site/
 .venv/bin/python -m academic_offers --build         # rebuild site/ from the database only
-.venv/bin/python -m academic_offers --only boe,crg  # run some sources only
+.venv/bin/python -m academic_offers --only dr,fct  # run selected Portuguese sources only
 .venv/bin/python -m unittest discover -s tests      # offline tests
 python3 -m http.server 8766 --directory site        # preview at http://localhost:8766
 ```
@@ -40,22 +40,14 @@ O GitHub Pages num plano gratuito exige um repositório público.
 
 As fontes portuguesas estão numa fase de validação. Confirma sempre os requisitos e prazos no aviso original. A BEP permanece desligada enquanto não existir acesso automatizado autorizado e estável.
 
-## Sources
+## Outras fontes e âmbito
 
-| Key | Source | Notes |
-|---|---|---|
-| `boe` | BOE open-data API, section II.B | University faculty posts and CSIC research posts. One entry per *área de conocimiento*; deadline estimated from "N días hábiles/naturales" with national + regional holidays. Notices whose posts can't be parsed go to the AI step, or stay as one "see notice" entry. |
-| `eu-ft` | EU Funding & Tenders API | MSCA and ERC calls |
-| `aei` | Agencia Estatal de Investigación | Open national calls (RYC, JdC, FPU…), deadline from the call page |
-| `ikerbasque`, `icrea` | Regional funders | Closed calls dropped; ICREA shown as "upcoming" between calls |
-| `csic` | CSIC Sede electrónica, "Convocatorias de personal" | Research calls still accepting applications (predoc, postdoc, research staff, technicians); deadline worked out from "N días hábiles a partir del…". Internal civil-service postings are skipped. The "Bolsa de trabajo" app needs a login, so it isn't used. |
-| `cnic`, `icfo`, `crg`, `cnio`, `irb` | Research centres' job boards | Deadlines read from each job page |
-| `uni:*` | University pages (UCM, UGR, UC3M) | Contracted faculty: Ayudante Doctor, Permanente Laboral, Asociado. Add more in `sources/universities.py` → `PAGES` |
+A edição portuguesa ativa apenas as fontes nacionais portuguesas listadas acima e os concursos europeus ERC/MSCA. Os adaptadores de Espanha do projeto original (BOE, AEI, Ikerbasque, ICREA, CSIC, centros e universidades) permanecem no repositório, mas não são executados nem apresentados nesta edição. O filtro da base de dados do site também exclui registos históricos dessas fontes.
 
-Not covered, and why:
-- **BSC:** its site is behind an anti-bot challenge, which Atalaya doesn't try to get past.
-- **EURAXESS:** blocks automated search. A data-feed request is drafted in `docs/euraxess-data-request.md`.
-- **Regional bulletins (BOJA, DOGC, BOCM…):** not yet; universities' own pages cover the same contract calls more directly.
+Não ativado:
+- **BEP:** o parser experimental está desligado enquanto não existir acesso automatizado autorizado e estável.
+- **EURAXESS:** ainda não existe um método de recolha oficial, estável e validado; não contornamos bloqueios de pesquisa.
+- **Outras universidades e politécnicos:** serão adicionados com parsers e testes próprios.
 
 ## How it works
 
