@@ -70,10 +70,19 @@ def _find_open_table(soup):
     if open_heading is None:
         raise RuntimeError("UBI open-candidature section not found; page structure may have changed")
 
-    return next(
-        (table for table in open_heading.find_all_next("table") if _has_header(table)),
-        None,
-    )
+    # Stop at the next closed-candidatures section. Without this boundary, a
+    # removed/renamed open table could make the parser accidentally ingest the
+    # closed table below it.
+    for element in open_heading.find_all_next(
+        ["h1", "h2", "h3", "h4", "p", "strong", "table"]
+    ):
+        if element.name != "table":
+            if "candidaturas encerradas" in _normal(element.get_text(" ", strip=True)):
+                break
+            continue
+        if _has_header(element):
+            return element
+    return None
 
 
 def _deadline(value: str) -> tuple[str | None, str | None]:
