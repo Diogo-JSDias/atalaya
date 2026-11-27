@@ -1,4 +1,4 @@
-"""Portuguese public-sector academic and research opportunities.
+"""Experimental parser for Portuguese public-sector academic opportunities (not yet enabled).
 
 The BEP homepage publishes a small, public list of recent offers. We deliberately
 consume only that public listing and its linked detail pages; no login or
@@ -18,8 +18,7 @@ from ..models import Offer
 
 log = logging.getLogger(__name__)
 
-BEP_HOME = "https://www.bep.gov.pt/Default.aspx/pages/pages/Oferta/Oferta_Pesquisa_basica.aspx?d=noCookie"
-BEP_DETAIL = "https://www.bep.gov.pt/Pages/Oferta/Oferta_Detalhes.aspx"
+BEP_HOME = "https://www.bep.gov.pt/Pages/Oferta/Oferta_Pesquisa_basica.aspx?d=noCookie"
 RELEVANT = re.compile(
     r"docente universit|investiga[cç][ãa]o cient[ií]fica|bolseir|"
     r"investigador|ci[eê]ncia|ensino superior|universit[aá]ri",
