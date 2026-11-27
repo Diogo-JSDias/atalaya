@@ -94,8 +94,11 @@ def _from_links(source: str, list_url: str, selector: str, institution: str, reg
         except Exception as e:
             log.info("%s detail %s: %s", source, url, e)
             title, text = "", ""
+        title = title or a.get_text(" ", strip=True)
+        if not title:
+            continue
         offers.append(Offer(
-            source=source, kind="position", title=title or a.get_text(" ", strip=True), url=url,
+            source=source, kind="position", title=title, url=url,
             institution=institution, region=region, area_raw=area,
             deadline=date_after(text, DEADLINE_WORDS),
         ))

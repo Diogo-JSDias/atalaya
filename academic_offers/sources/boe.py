@@ -122,10 +122,12 @@ def parse_notice(item: dict, published: dt.date, department: str) -> list[Offer]
         if found:
             break
 
+    url_pdf = item.get("url_pdf")
+    pdf = url_pdf.get("texto") if isinstance(url_pdf, dict) else (url_pdf if isinstance(url_pdf, str) else None)
     common = dict(
         source="boe", kind="position", url=url, institution=institution, region=region,
         deadline=deadline, deadline_estimated=deadline is not None, published=published.isoformat(),
-        extra={"boe_id": item["identificador"], "pdf": item["url_pdf"]["texto"], "boe_title": title},
+        extra={"boe_id": item["identificador"], "pdf": pdf, "boe_title": title},
     )
     if found:
         return [

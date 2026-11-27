@@ -124,7 +124,11 @@ const stageLabel = value => STAGE_LABEL[value] || value;
 const state = { field: "", kind: "", stage: "", subfield: "", region: "", inst: "", q: "", soon: false, fresh: false };
 
 const $ = id => document.getElementById(id);
-const days = iso => Math.round((new Date(iso) - new Date(TODAY)) / 864e5);
+const parseLocalDate = iso => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d);
+};
+const days = iso => Math.round((parseLocalDate(iso) - parseLocalDate(TODAY)) / 864e5);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const fmt = iso => new Date(iso + "T00:00").toLocaleDateString("pt-PT", {day:"numeric", month:"short", year:"numeric"});
 const subfieldFor = o => o.subfield || "Geral";

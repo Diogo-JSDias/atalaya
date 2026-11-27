@@ -56,7 +56,7 @@ STAGE_RULES: list[tuple[str, str]] = [
     (r"investigadores?\s+dl\s*57|investigador(?:a)?\s+de\s+n[ií]vel\s+(?:inicial|interm[eé]dio)|investigador(?:a)?\s+doutorado", "Researcher / DL 57"),
     (r"catedr[áa]tic|full professor|profesor/a de investigaci|professor catedrático", "Senior faculty / research professor"),
     (r"titular de universidad|permanente laboral|cient[íi]fico/a titular|investigador/a cient|permanent position|group leader|tenure|professor associado|professor auxiliar|investigador principal|investigador auxiliar", "Permanent faculty / researcher"),
-    (r"ayudante doctor|ram[óo]n y cajal|tenure.track|erc (starting|consolidator)|consolidator grant|research fellows|icrea", "Tenure-track & independent fellowships"),
+    (r"ayudante doctor|ram[óo]n y cajal|tenure.track|erc (?:starting|consolidator)|consolidator grant|research fellows|icrea", "Tenure-track & independent fellowships"),
     (r"postdoc|post-doc|posdoc|juan de la cierva|postdoctoral|pós[- ]?doutor", "Postdoc"),
     (r"predoc|phd|doctoral|fpu|fpi|doctorado|student research|doutorand|bolsa de doutoramento|doutoramento", "PhD / predoc"),
     (r"t[ée]cnic|technician|manager|gesti[óo]n|ingeniero de|operations|técnico superior", "Technical & research support"),
@@ -71,7 +71,7 @@ def classify(o: Offer) -> Offer:
             o.field, o.subfield = field, sub
             break
     else:
-        o.field, o.subfield = "Multidisciplinary / other", ("Funding calls" if o.kind == "call" else "")
+        o.field, o.subfield = "Multidisciplinary / other", ("Funding calls" if o.kind == "call" else "Other")
 
     stage_text = f"{o.position_type} {o.title}"
     o.stage = o.stage or next((s for pat, s in _STAGES if pat.search(stage_text)), "")  # keep a stage the source gave

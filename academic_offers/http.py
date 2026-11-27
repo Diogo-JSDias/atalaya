@@ -22,14 +22,14 @@ BOT_NAME = "AtalayaBot"
 DEFAULT_DELAY = 2.0
 MAX_REDIRECTS = 10
 
-CACHE_DIR = Path(".cache/http")
+CACHE_DIR = Path(__file__).resolve().parent.parent / ".cache" / "http"
 CACHE_TTL = 6 * 3600  # seconds
 
 _last_hit: dict[str, float] = {}
 _robots: dict[str, RobotFileParser] = {}
 _client = httpx.Client(
     headers={"User-Agent": USER_AGENT, "Accept-Language": "pt-PT,pt;q=0.9,en;q=0.8"},
-    follow_redirects=True,
+    follow_redirects=False,
     timeout=45,
 )
 
@@ -63,9 +63,12 @@ def _robots_for(scheme: str, host: str) -> RobotFileParser:
                 continue
 
             if 200 <= r.status_code < 300:
-                rp = RobotFileParser()
-                rp.parse(r.text.splitlines())
-                _robots[host] = rp
+                if len(r.content) > 1024 * 1024:
+                    log.warning("robots.txt for %s exceeds 1 MB; disallowing the host", host)
+                else:
+                    rp = RobotFileParser()
+                    rp.parse(r.text.splitlines())
+                    _robots[host] = rp
             elif 400 <= r.status_code < 500 and r.status_code != 429:
                 # A 4xx response means robots.txt is unavailable. A 429 is
                 # treated conservatively as rate limiting, not as permission.
@@ -85,10 +88,10 @@ def _check(url: str) -> float:
     """Raise if robots.txt disallows the URL; return the delay to keep between requests."""
     u = urlparse(url)
     rp = _robots_for(u.scheme, u.netloc)
-    if rp is not None and not rp.can_fetch(BOT_NAME, url):
+    if not rp.can_fetch(BOT_NAME, url):
         log.warning("robots.txt disallows %s; skipping", url)
         raise Disallowed(url)
-    delay = (rp.crawl_delay(BOT_NAME) if rp else None) or DEFAULT_DELAY
+    delay = rp.crawl_delay(BOT_NAME) or DEFAULT_DELAY
     return max(float(delay), DEFAULT_DELAY)
 
 

@@ -38,7 +38,7 @@
   <p>O portal recolhe concursos docentes, oportunidades de investigação e bolsas a partir de boletins oficiais, fundações, universidades e centros de investigação. Normaliza os dados, agrupa as oportunidades por área e fase de carreira e liga cada entrada ao aviso original.</p>
 
   <h2>Precisão e prazos</h2>
-  <p>Confirme sempre o aviso original antes de apresentar uma candidatura. Só são apresentados prazos completos quando existe uma data explícita na fonte. Datas calculadas a partir de durações legais devem ser identificadas como estimativas e não substituem a interpretação do aviso ou da legislação aplicável.</p>
+  <p>Confirme sempre o aviso original antes de apresentar uma candidatura. Só são apresentados prazos completos quando existe uma data explícita na fonte. Datas calculadas a partir de durações legais são identificadas como estimativas e não substituem a interpretação do aviso ou da legislação aplicável.</p>
   <p>Os campos extraídos automaticamente podem conter erros. Quando uma fonte não publica um prazo, entidade ou domínio científico de forma clara, o portal deve deixar esse campo em branco em vez de o adivinhar.</p>
 
   <h2>Fontes e última recolha</h2>
@@ -48,7 +48,7 @@
       <tr><th scope="col">Fonte</th><th scope="col">Última execução</th><th scope="col">Entradas</th></tr>
     </thead>
     <tbody>
-      {% for s in status %}<tr><td>{{ s.name }}</td><td>{{ s.run_at }}</td><td>{{ s.n }}{% if s.n == 0 and not s.may_be_empty %} ⚠️{% endif %}</td></tr>{% endfor %}
+      {% for s in status %}<tr><td>{{ s.name }}</td><td>{{ s.run_at }}</td><td>{{ s.n }}{% if s.n == 0 and not s.may_be_empty %} <span role="img" aria-label="aviso: fonte sem entradas">⚠️</span>{% endif %}</td></tr>{% endfor %}
     </tbody>
   </table>
 

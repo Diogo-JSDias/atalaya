@@ -9,6 +9,7 @@ from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
+from ..dates import date_after
 from ..http import fetch, post_json
 from ..models import Offer
 
@@ -60,11 +61,7 @@ def eu_calls(today: dt.date | None = None) -> list[Offer]:
 
 # ---------------------------------------------------------------- AEI
 AEI_LIST = "https://www.aei.gob.es/convocatorias/buscador-convocatorias"
-DATE = re.compile(r"(\d{2})/(\d{2})/(\d{4})")
-
-
-def _iso(d: str, m: str, y: str) -> str:
-    return f"{y}-{m}-{d}"
+AEI_DEADLINE_WORDS = r"(?:Plazos?\s+de\s+solicitud|Plazo)[^.]{0,120}?(?:hasta|fin(?:al)?)|Plazos?\s+de\s+solicitud|Plazo"
 
 
 def aei_calls() -> list[Offer]:
@@ -83,9 +80,7 @@ def aei_calls() -> list[Offer]:
         deadline = None
         try:
             text = " ".join(BeautifulSoup(fetch(url), "html.parser").get_text(" ").split())
-            seg = text[text.find("Plazos de solicitud"):][:600] if "Plazos de solicitud" in text else text
-            dates = sorted(_iso(*d) for d in DATE.findall(seg))
-            deadline = dates[-1] if dates else None
+            deadline = date_after(text, AEI_DEADLINE_WORDS, window=240)
         except Exception:
             log.exception("AEI detail %s", url)
         offers.append(Offer(
@@ -108,12 +103,15 @@ CLOSED = re.compile(r"call is (?:now )?closed|applications were screened|were se
 
 
 def _en_date(text: str) -> str | None:
-    m = EN_DATE_DMY.search(text)
-    if m:
-        return dt.date(int(m.group(3)), MONTHS[m.group(2).lower()], int(m.group(1))).isoformat()
-    m = EN_DATE_MDY.search(text)
-    if m:
-        return dt.date(int(m.group(3)), MONTHS[m.group(1).lower()], int(m.group(2))).isoformat()
+    try:
+        m = EN_DATE_DMY.search(text)
+        if m:
+            return dt.date(int(m.group(3)), MONTHS[m.group(2).lower()], int(m.group(1))).isoformat()
+        m = EN_DATE_MDY.search(text)
+        if m:
+            return dt.date(int(m.group(3)), MONTHS[m.group(1).lower()], int(m.group(2))).isoformat()
+    except ValueError:
+        return None
     return None
 
 
@@ -157,8 +155,9 @@ def icrea_calls() -> list[Offer]:
     if closed:
         return []
     years = re.findall(r"ICREA Call (?:Rules )?(20\d\d)", text)
+    title = f"ICREA Research Professors call {max(years)}" if years else "ICREA Research Professors call"
     return [Offer(
-        source="icrea", kind="call", title=f"ICREA Research Professors call {max(years) if years else ''}".strip(),
+        source="icrea", kind="call", title=title,
         url=ICREA_CALLS, institution="ICREA", region="Cataluña", position_type="Regional call",
         deadline=_en_date(text[text.lower().find("deadline"):][:80]) if "deadline" in text.lower() else None,
     )]
