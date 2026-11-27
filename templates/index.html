@@ -127,6 +127,7 @@ const $ = id => document.getElementById(id);
 const days = iso => Math.round((new Date(iso) - new Date(TODAY)) / 864e5);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const fmt = iso => new Date(iso + "T00:00").toLocaleDateString("pt-PT", {day:"numeric", month:"short", year:"numeric"});
+const subfieldFor = o => o.subfield || "Geral";
 
 function fillSelect(el, label, values, order, display = value => value) {
   const vals = [...new Set(values.filter(Boolean))];
@@ -183,9 +184,9 @@ function render() {
     const inField = visible.filter(o => o.field === f);
     if (!inField.length) continue;
     html += `<h2>${esc(fieldLabel(f))} <small>${inField.length}</small></h2>`;
-    const subs = [...new Set(inField.map(o => o.subfield || "Geral"))].sort((a, b) => a.localeCompare(b));
+    const subs = [...new Set(inField.map(subfieldFor))].sort((a, b) => a.localeCompare(b));
     for (const s of subs) {
-      const items = inField.filter(o => (o.subfield || "General") === s).sort((a, b) => sortKey(a) < sortKey(b) ? -1 : 1);
+      const items = inField.filter(o => subfieldFor(o) === s).sort((a, b) => sortKey(a) < sortKey(b) ? -1 : 1);
       if (subs.length > 1) html += `<h3>${esc(s)} · ${items.length}</h3>`;
       html += items.map(card).join("");
     }
