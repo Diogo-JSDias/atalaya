@@ -4,7 +4,8 @@ This fork is being adapted incrementally. The Spanish sources remain unchanged.
 
 ## Implemented
 
-- Diário da República: registered a first-pass scraper for the official RSS index of the 2nd series (all parts, HTML). The official subscription page publishes the feed link; the web preview cannot fetch XML content, so live parsing still needs validation in GitHub Actions. The parser filters likely recruitment/research notices by title and preserves the original notice URL. This is a candidate detector, not a legally complete vacancy classifier; verify each notice and deadline at source.
+- Diário da República: registered a first-pass scraper for the official RSS index of the 2nd series (all parts, HTML). The parser supports RSS and Atom entries, filters likely recruitment/research notices by title and preserves the original notice URL. Its live response and classification quality still need validation in GitHub Actions; verify each notice and deadline at source.
+- FCT: registered a first-pass parser for the official open-concursos tab. It keeps links hosted on fct.pt, deduplicates records and extracts only explicit numeric deadlines. It does not treat the planned or closed tabs as open calls. Live HTML selector coverage and pagination still need validation.
 - Portuguese month names are recognised by `academic_offers.dates.first_date`.
 - The classifier recognises a first set of Portuguese academic/research role labels, including professor catedrático, professor associado, professor auxiliar, investigador principal/auxiliar, pós-doutoramento and doutoramento.
 - Regression tests cover Portuguese month names and the numeric date format commonly used in Portugal.
@@ -22,7 +23,7 @@ The official RSS subscription page publishes a link for the second series, all p
 
 ### Fundação para a Ciência e a Tecnologia (FCT)
 
-The FCT publishes a public [Concursos](https://www.fct.pt/concursos/) index with open, planned and closed calls, plus filters for funding type and scientific domain. Its [Bolsas](https://www.fct.pt/financiamento/programas-de-financiamento/bolsas/) and [Emprego Científico](https://www.fct.pt/financiamento/programas-de-financiamento/emprego-cientifico/) pages describe the main research-opportunity categories. The 2026 calendar is a planning document, not a live vacancy feed. The listing page is the best candidate for a future scraper, but its pagination, filters, HTML structure and terms must be validated before registering an automated source. Preserve each call's detail-page URL and extract deadlines only from the published notice.
+The FCT publishes a public [Concursos](https://www.fct.pt/concursos/) index with open, planned and closed calls, plus filters for funding type and scientific domain. Its [Bolsas](https://www.fct.pt/financiamento/programas-de-financiamento/bolsas/) and [Emprego Científico](https://www.fct.pt/financiamento/programas-de-financiamento/emprego-cientifico/) pages describe the main research-opportunity categories. The 2026 calendar is a planning document, not a live vacancy feed. The open listing is now consumed at https://www.fct.pt/concursos/?paged=1&tab=open. The initial parser is deliberately conservative: it preserves same-domain detail links and only accepts a complete numeric date from the listing card as a deadline. The source still needs runtime validation for actual card selectors, pagination and possible detail-page deadlines. Do not scrape myFCT as a substitute: it is a separate application portal and may expose application-management records rather than the public notice index.
 
 ### Bolsa de Emprego Público (BEP)
 
@@ -38,8 +39,8 @@ An experimental parser exists at `academic_offers/sources/portugal.py`, but it i
 
 ## Next milestones
 
-1. Validate the DR RSS parser against several real daily issues; improve notice filtering and extract institutions, deadlines and original notice metadata.
-2. Prototype an FCT Concursos index parser after validating pagination and page structure; keep the FCT calendar as discovery/context only.
+1. Validate the DR RSS and FCT parsers against live responses in GitHub Actions; measure false positives and pagination coverage.
+2. Improve extraction of FCT call categories, areas and exact deadlines from each official notice, without inferring missing values.
 3. Add explicit Portuguese deadline rules only after checking the relevant notice wording and applicable legal rules.
 4. Validate BEP automated access or obtain an authorised feed.
 5. Add institutional career pages with source-specific tests, then adapt the interface and Portuguese-specific filters.
