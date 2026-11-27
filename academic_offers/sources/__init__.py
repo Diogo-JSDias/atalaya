@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from ..models import Offer
-from . import calls, dr, fct, uc_apply, ualg, ulisboa, uporto, uminho_eeg, novafct_investigadores
+from . import calls, dr, fct, uc_apply, ualg, ulisboa, uporto, uminho_eeg, novafct_investigadores, ubi_docentes
 
 
 @dataclass
@@ -39,6 +39,8 @@ SOURCES: list[Source] = [
            lambda today, _d: uminho_eeg.scrape(today), may_be_empty=True),
     Source("novafct-investigadores", "NOVA FCT – concursos de investigadores (apenas pessoal investigador)",
            lambda today, _d: novafct_investigadores.scrape(today), may_be_empty=True),
+    Source("ubi-docentes", "Universidade da Beira Interior – concursos para docentes",
+           lambda today, _d: ubi_docentes.scrape(today), may_be_empty=True),
     Source("eu-ft", "EU Funding & Tenders – concursos ERC e MSCA",
            lambda today, _d: calls.eu_calls(today), may_be_empty=True),
 ]
