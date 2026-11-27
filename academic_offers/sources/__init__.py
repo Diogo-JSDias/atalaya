@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from ..models import Offer
-from . import boe, calls, centres, csic, dr, fct, universities
+from . import boe, calls, centres, csic, dr, fct, ulisboa, universities
 
 
 @dataclass
@@ -28,6 +28,8 @@ SOURCES: list[Source] = [
            lambda today, _d: dr.scrape(today), may_be_empty=True),
     Source("fct", "FCT – concursos abertos (bolsas, emprego científico e projetos)",
            lambda today, _d: fct.scrape(today), may_be_empty=True),
+    Source("ulisboa", "Universidade de Lisboa – recrutamento académico e científico",
+           lambda today, _d: ulisboa.scrape(today), may_be_empty=True),
     Source("boe", "BOE – Boletín Oficial del Estado, sección II.B (universidades, CSIC)",
            lambda today, days: boe.scrape(days=days, today=today)),
     Source("eu-ft", "EU Funding & Tenders portal (MSCA, ERC)", lambda today, _d: calls.eu_calls(today)),
