@@ -42,6 +42,7 @@ O GitHub Pages num plano gratuito exige um repositório público.
 | `uc-apply` | Universidade de Coimbra | UC Apply; bolsas de investigação, docentes e investigadores com candidaturas abertas. |
 | `uminho-eeg` | Universidade do Minho – EEG | Apenas concursos abertos para pessoal docente/investigador da Escola de Economia, Gestão e Ciência Política; não representa a cobertura central de toda a UMinho. |
 | `novafct-investigadores` | NOVA FCT | Concursos para investigadores na página oficial de recrutamento da Faculdade; não inclui concursos docentes ou não docentes. |
+| `ubi-docentes` | Universidade da Beira Interior | Concursos para pessoal docente em candidatura aberta; os concursos para investigadores não estão cobertos por esta fonte. |
 
 As fontes portuguesas estão numa fase de validação. Confirma sempre os requisitos e prazos no aviso original. A BEP permanece desligada enquanto não existir acesso automatizado autorizado e estável.
 
