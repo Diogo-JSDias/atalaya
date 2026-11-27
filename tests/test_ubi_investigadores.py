@@ -112,7 +112,7 @@ class UBIInvestigadoresTests(unittest.TestCase):
         self.assertEqual(len(offers), 1)
         self.assertEqual(offers[0].deadline, "2026-12-30")
         mock_fetch.assert_called_once_with(
-            "https://www.ubi.pt/Sites/Academicos/pt/Pagina/recrutamento"
+            "https://www.ubi.pt/sites/academicos/pt/pagina/recrutamento"
         )
 
     def test_fails_closed_when_open_table_disappears(self):
