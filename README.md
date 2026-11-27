@@ -1,11 +1,8 @@
-# Atalaya: plazas académicas en España
+# Atalaia: oportunidades académicas e científicas em Portugal
 
-*Atalaya* (Spanish for "watchtower"): one lookout over academic posts and research funding across Spain: [https://pacocp.es/atalaya/](https://pacocp.es/atalaya/)
-Made by [Paco Carrillo-Pérez](https://pacocp.es) as a non-commercial side project.
+*Atalaia* é um portal de oportunidades académicas e científicas em Portugal, adaptado a partir do projeto aberto [Atalaya](https://github.com/pacocp/atalaya), originalmente criado por [Francisco Carrillo-Pérez](https://pacocp.es).
 
-Every day Atalaya collects open faculty posts, research jobs and funding calls from official bulletins,
-funders, research centres and universities, classifies them by field and career stage, and publishes a
-static, filterable website. Each listing links back to its original notice.
+Todos os dias, a Atalaia recolhe concursos para docentes, vagas de investigação e bolsas a partir de fontes oficiais, fundações, centros de investigação e universidades portuguesas. As oportunidades são classificadas por área e fase de carreira e publicadas num site estático e filtrável. Cada entrada liga ao aviso original.
 
 ## Run locally
 
@@ -31,7 +28,17 @@ One-time setup on GitHub:
    `ATALAYA_LLM_MODEL` (default `claude-haiku-5-5`).
 4. **Actions → Daily update → Run workflow** for the first deploy.
 
-GitHub Pages on a free account needs a public repository.
+O GitHub Pages num plano gratuito exige um repositório público.
+
+## Fontes portuguesas
+
+| Chave | Fonte | Cobertura |
+|---|---|---|
+| `dr` | Diário da República, 2.ª Série (RSS) | Avisos de recrutamento, docência e investigação; filtro inicial por título. |
+| `fct` | Fundação para a Ciência e a Tecnologia | Concursos abertos, com enriquecimento das páginas oficiais de detalhe. |
+| `ulisboa` | Universidade de Lisboa | Recrutamento académico e científico; inclui categoria, vagas, prazo e documento principal. |
+
+As fontes portuguesas estão numa fase de validação. Confirma sempre os requisitos e prazos no aviso original. A BEP permanece desligada enquanto não existir acesso automatizado autorizado e estável.
 
 ## Sources
 
