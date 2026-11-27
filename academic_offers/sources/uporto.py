@@ -20,10 +20,10 @@ log = logging.getLogger(__name__)
 
 LIST_URL = "https://noticias.up.pt/oportunidades/?prazo=abertas"
 MAX_PAGES = 5
-DATE_PT = re.compile(r"(?:até|prazo(?: de candidatura)?)\\s*[:：]?\\s*(\\d{1,2})[./-](\\d{1,2})[./-](20\\d{2})", re.I)
+DATE_PT = re.compile(r"(?:até|prazo(?: de candidatura)?)\s*[:：]?\s*(\d{1,2})[./-](\d{1,2})[./-](20\d{2})", re.I)
 ACADEMIC = re.compile(
     r"professor|docente|investigador|investiga[cç][ãa]o|"
-    r"bolsa(?:s)?(?:\\s+(?:de\\s+)?(?:investiga[cç][ãa]o|p[oó]s[- ]?doutoramento|doutoramento))?|"
+    r"bolsa(?:s)?(?:\s+(?:de\s+)?(?:investiga[cç][ãa]o|p[oó]s[- ]?doutoramento|doutoramento))?|"
     r"p[oó]s[- ]?doutor|doutoramento|research|cient[ií]fic",
     re.I,
 )
@@ -47,7 +47,7 @@ def _deadline(text: str) -> str | None:
 
 
 def _posts(title: str) -> int:
-    match = re.search(r"\\b(\\d{1,2})\\s+(?:vagas?|postos?|bolsas?)\\b", title, re.I)
+    match = re.search(r"\b(\d{1,2})\s+(?:vagas?|postos?|bolsas?)\b", title, re.I)
     return max(1, int(match.group(1))) if match else 1
 
 
