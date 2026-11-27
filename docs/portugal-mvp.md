@@ -1,6 +1,10 @@
 # Portugal adaptation: initial implementation
 
-This fork is being adapted incrementally. The Spanish sources remain unchanged.
+This fork is being adapted incrementally. The original Spanish adapters remain in the repository but are disabled in the active Portuguese registry.
+
+## Active sources
+
+The active registry includes only the Portuguese Diário da República, FCT and Universidade de Lisboa sources, plus EU Funding & Tenders (ERC/MSCA). Spanish adapters remain in code but are not run by the Portuguese edition. Historical records from inactive source keys are excluded from the generated site.
 
 ## Implemented
 
@@ -48,4 +52,4 @@ An experimental parser exists at `academic_offers/sources/portugal.py`, but it i
 2. Validate the FCT detail-page extractor against live notices and refine category/domain mappings only when the official page exposes unambiguous metadata.
 3. Add explicit Portuguese deadline rules only after checking the relevant notice wording and applicable legal rules.
 4. Validate BEP automated access or obtain an authorised feed.
-5. Add institutional career pages with source-specific tests, then adapt the interface and Portuguese-specific filters.
+5. Add more Portuguese university and polytechnic career pages with source-specific tests.
