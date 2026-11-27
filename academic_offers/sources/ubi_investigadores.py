@@ -19,7 +19,7 @@ from ..models import Offer
 
 log = logging.getLogger(__name__)
 
-LIST_URL = "https://www.ubi.pt/Sites/Academicos/pt/Pagina/recrutamento"
+LIST_URL = "https://www.ubi.pt/sites/academicos/pt/pagina/recrutamento"
 OFFICIAL_HOSTS = ("ubi.pt", "diariodarepublica.pt")
 DATE_RE = re.compile(
     r"(?<!\d)(?:(\d{1,2})[/-](\d{1,2})[/-](20\d{2})|(20\d{2})[/-](\d{1,2})[/-](\d{1,2}))(?!\d)"
