@@ -40,7 +40,7 @@ An experimental parser exists at `academic_offers/sources/portugal.py`, but it i
 ## Next milestones
 
 1. Validate the DR RSS and FCT parsers against live responses in GitHub Actions; measure false positives and pagination coverage.
-2. Improve extraction of FCT call categories, areas and exact deadlines from each official notice, without inferring missing values.
+2. Validate the FCT detail-page extractor against live notices and refine category/domain mappings only when the official page exposes unambiguous metadata.
 3. Add explicit Portuguese deadline rules only after checking the relevant notice wording and applicable legal rules.
 4. Validate BEP automated access or obtain an authorised feed.
 5. Add institutional career pages with source-specific tests, then adapt the interface and Portuguese-specific filters.
