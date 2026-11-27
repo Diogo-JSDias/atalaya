@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from ..models import Offer
-from . import calls, dr, fct, uc_apply, ualg, ulisboa, ist, uporto, uminho, uminho_eeg, novafct_investigadores, ubi_docentes, ubi_investigadores, nova_ims, nova_fcsh, ucp_medicina, ucp_porto, ucp_fch, algoritmi, ieeta, inesc_id, inesc_tec, itqb_nova, portugal_targets
+from . import calls, dr, fct, uc_apply, ualg, ulisboa, ist, uporto, uminho, uminho_eeg, novafct_investigadores, ubi_docentes, ubi_investigadores, nova_ims, nova_fcsh, ucp_medicina, ucp_porto, ucp_fch, algoritmi, ieeta, inesc_id, inesc_tec, itqb_nova, portugal_targets, i3s
 
 
 @dataclass
@@ -73,6 +73,7 @@ SOURCES: list[Source] = [
     Source("ipatimup", "Ipatimup – Instituto de Patologia e Imunologia Molecular da Universidade do Porto (Rede LASI)", lambda today, _d: portugal_targets.ipatimup(today), may_be_empty=True),
     Source("inescc", "INESC Coimbra – Instituto de Engenharia de Sistemas e Computadores de Coimbra (Rede LASI)", lambda today, _d: portugal_targets.inescc(today), may_be_empty=True),
     Source("cintesis", "CINTESIS – Centro de Investigação em Tecnologias e Serviços de Saúde", lambda today, _d: portugal_targets.cintesis(today), may_be_empty=True),
+    Source("i3s", "i3S – Instituto de Investigação e Inovação em Saúde (Universidade do Porto)", lambda today, _d: i3s.scrape(today), may_be_empty=True),
     Source("eu-ft", "EU Funding & Tenders – concursos ERC e MSCA",
            lambda today, _d: calls.eu_calls(today), may_be_empty=True),
 ]
