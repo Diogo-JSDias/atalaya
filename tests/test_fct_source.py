@@ -94,6 +94,16 @@ class FCTSourceTests(unittest.TestCase):
         details = parse_detail_page(html)
         self.assertEqual(details["deadline"], "2027-03-31")
 
+    def test_submission_range_does_not_pick_later_results_date(self):
+        html = """
+        <html><main>
+          <p>Submissão de candidaturas: 01/10/2026 a 13/11/2026.</p>
+          <p>Resultados provisórios em 31/03/2027.</p>
+        </main></html>
+        """
+        details = parse_detail_page(html)
+        self.assertEqual(details["deadline"], "2026-11-13")
+
     def test_detail_does_not_treat_publication_date_as_deadline(self):
         html = """
         <html><main>
@@ -117,6 +127,15 @@ class FCTSourceTests(unittest.TestCase):
         details = parse_detail_page(html, "Concurso de bolsas")
         self.assertEqual(details["funding_type"], "Bolsas")
         self.assertEqual(details["scientific_domain"], "Ciências Naturais")
+
+    def test_explicit_category_overrides_title_guess(self):
+        html = """
+        <main><table>
+          <tr><th>Tipo de financiamento</th><td>Bolsas</td></tr>
+        </table></main>
+        """
+        details = parse_detail_page(html, "Concurso para Projetos ICDT")
+        self.assertEqual(details["funding_type"], "Bolsas")
 
     def test_title_category_recognises_scientific_employment(self):
         details = parse_detail_page("<main><p>Concurso aberto.</p></main>",
