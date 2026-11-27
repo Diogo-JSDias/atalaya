@@ -178,7 +178,9 @@ def lip(today: dt.date | None = None) -> list[Offer]:
     html = fetch(LIP_URL)
     soup = BeautifulSoup(html, "html.parser")
     text = _clean(soup.get_text(" ", strip=True))
-    heading = soup.find("h1")
+    heading = soup.find(["h1", "h2", "h3"])
+    if heading and _clean(heading.get_text(" ", strip=True)).casefold() == "call":
+        heading = heading.find_next(["h2", "h3"])
     title = _clean(heading.get_text(" ", strip=True)) if heading else ""
     if not title or not re.search(
         r"open\s*[-–]\s*(?:applications?|candidaturas?)|candidaturas? abertas|accepting applications",
