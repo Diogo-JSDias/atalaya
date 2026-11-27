@@ -51,8 +51,8 @@ def _clean(value: str) -> str:
 def _last_date(value: str) -> str | None:
     """Return the final date in a date-range cell (usually the closing date)."""
     patterns = (
-        r"\\d{1,2}[/.-]\\d{1,2}[/.-]20\\d{2}",
-        r"\\d{1,2}\\s+de\\s+(?:janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)\\s+(?:de\\s+)?20\\d{2}",
+        r"\d{1,2}[/.-]\d{1,2}[/.-]20\d{2}",
+        r"\d{1,2}\s+de\s+(?:janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)\s+(?:de\s+)?20\d{2}",
     )
     matches = []
     for pattern in patterns:
