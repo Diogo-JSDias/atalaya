@@ -246,7 +246,7 @@ def parse_listing(
             continue
 
         is_scholarship = bool(re.search(r"bolsa", title, re.I))
-        is_interest = bool(re.search(r"manifesta[cç][ãa]o de interesse", title, re.I))
+        is_interest = bool(re.search(r"manifesta[cç][ãa]o de interesse", _clean(card.get_text(" ", strip=True)), re.I))
         kind = "call" if is_scholarship else "position"
         position_type = (
             "Bolsa de investigação" if is_scholarship
