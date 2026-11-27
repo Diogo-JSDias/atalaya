@@ -67,6 +67,18 @@ class PortugalTargetsTests(unittest.TestCase):
         )
         self.assertEqual([o.title for o in offers], ["Assistant Researcher Hiring"])
 
+    def test_ucp_table_uses_deadline_column_not_application_start(self):
+        from unittest.mock import patch
+        html = """
+        <table><tr><th>Position</th><th>Requirements</th><th>Deadline</th><th>Status</th></tr>
+        <tr><td><a href="/offer/assistant-professor">Assistant Professor in Economics</a></td>
+        <td>PhD required</td><td>From 27/11/2026 to 10/12/2026 at 17:00</td><td>Open</td></tr>
+        </table>"""
+        with patch.object(pt, "fetch", return_value=html):
+            offers = pt.uc_portuguesa(today=__import__("datetime").date(2026, 11, 27))
+        self.assertEqual(len(offers), 1)
+        self.assertEqual(offers[0].deadline, "2026-12-10")
+
     def test_foreign_or_untrusted_links_are_rejected(self):
         html = '<main><div class="job"><a href="https://evil.example/jobs/1">Researcher</a></div></main>'
         offers = pt.parse_link_board(
