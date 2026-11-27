@@ -48,6 +48,8 @@ O GitHub Pages num plano gratuito exige um repositório público.
 | `ubi-investigadores` | Universidade da Beira Interior | Concursos para pessoal investigador; parser separado e sem vagas atuais na secção aberta na data de integração. |
 | `nova-ims` | NOVA IMS | Bolsas e recrutamento docente; lê os editais PDF para extrair prazos explícitos ou calcular prazos em dias úteis quando o edital os define. |
 | `nova-fcsh` | NOVA FCSH | Concursos para investigadores; usa avisos-extrato oficiais do Diário da República e só apresenta concursos com prazo legal futuro calculável. |
+| `nova-reitoria` | Universidade NOVA de Lisboa – Reitoria | Concursos não docentes na secção oficial “A Decorrer”, com data final extraída da janela de candidatura. |
+| `nova-law` | NOVA School of Law | Recrutamento de investigadores; confirma a data final da página com o prazo legal contado a partir da publicação do edital no Diário da República. |
 | `ucp-medicina` | Católica – Faculdade de Medicina | Concursos de recrutamento docente; analisa editais PDF e só conserva os que ainda podem estar dentro do prazo, sem inventar a data efetiva de publicação. |
 | `ua-investigacao`, `ua-docentes`, `ua-tecnico` | Universidade de Aveiro | Concursos de pessoal investigador e docente, mais o portal JobsUA para pessoal técnico, administrativo e de gestão. |
 | `iscte` | Iscte | Portal de concursos docentes, técnicos, investigação e bolsas; inclui a Associação Iscte Conhecimento e Inovação. |
