@@ -14,7 +14,7 @@ class PortugalEditionTests(unittest.TestCase):
     def test_only_portuguese_and_european_sources_are_active(self):
         self.assertEqual(
             {source.key for source in SOURCES},
-            {"dr", "fct", "ulisboa", "uporto", "ualg", "uc-apply", "uminho", "uminho-eeg", "novafct-investigadores", "ubi-docentes", "ubi-investigadores", "nova-ims", "nova-fcsh", "ucp-medicina", "ucp-porto", "ucp-fch", "gimm", "inl", "iscte", "lip", "ua-investigacao", "ua-docentes", "ua-tecnico", "ucp-clsbe", "inesc-tec", "algoritmi", "eu-ft"},
+            {"dr", "fct", "ulisboa", "uporto", "ualg", "uc-apply", "uminho", "uminho-eeg", "novafct-investigadores", "ubi-docentes", "ubi-investigadores", "nova-ims", "nova-fcsh", "ucp-medicina", "ucp-porto", "ucp-fch", "gimm", "inl", "iscte", "lip", "ua-investigacao", "ua-docentes", "ua-tecnico", "ucp-clsbe", "inesc-tec", "algoritmi", "ieeta", "eu-ft"},
         )
 
     @patch("academic_offers.__main__.store.last_runs", return_value={})
@@ -48,15 +48,16 @@ class PortugalEditionTests(unittest.TestCase):
             {"source": "ucp-fch", "id": "ucp-fch-offer", "title": "Oferta UCP FCH"},
             {"source": "inesc-tec", "id": "inesc-tec-offer", "title": "Oferta INESC TEC"},
             {"source": "algoritmi", "id": "algoritmi-offer", "title": "Oferta ALGORITMI"},
+            {"source": "ieeta", "id": "ieeta-offer", "title": "Oferta IEETA"},
             {"source": "eu-ft", "id": "european-call", "title": "ERC call"},
         ]
         with tempfile.TemporaryDirectory() as tmp:
             count = build_site(object(), dt.date(2026, 11, 27), Path(tmp))
             rows = json.loads((Path(tmp) / "offers.json").read_text(encoding="utf-8"))
-        self.assertEqual(count, 27)
+        self.assertEqual(count, 28)
         self.assertEqual(
             {row["source"] for row in rows},
-            {"dr", "fct", "ulisboa", "uporto", "ualg", "uc-apply", "uminho", "uminho-eeg", "novafct-investigadores", "ubi-docentes", "ubi-investigadores", "nova-ims", "nova-fcsh", "ucp-medicina", "ucp-porto", "ucp-fch", "gimm", "inl", "iscte", "lip", "ua-investigacao", "ua-docentes", "ua-tecnico", "ucp-clsbe", "inesc-tec", "algoritmi", "eu-ft"},
+            {"dr", "fct", "ulisboa", "uporto", "ualg", "uc-apply", "uminho", "uminho-eeg", "novafct-investigadores", "ubi-docentes", "ubi-investigadores", "nova-ims", "nova-fcsh", "ucp-medicina", "ucp-porto", "ucp-fch", "gimm", "inl", "iscte", "lip", "ua-investigacao", "ua-docentes", "ua-tecnico", "ucp-clsbe", "inesc-tec", "algoritmi", "ieeta", "eu-ft"},
         )
         self.assertFalse(any(row["id"] == "legacy-spanish" for row in rows))
 
