@@ -3,6 +3,7 @@ import unittest
 from unittest.mock import patch
 
 from academic_offers.models import Offer
+from academic_offers.classify import classify
 from academic_offers.sources.fct import parse_detail_page, parse_open_listing, _enrich_offer
 
 
@@ -121,6 +122,14 @@ class FCTSourceTests(unittest.TestCase):
         details = parse_detail_page("<main><p>Concurso aberto.</p></main>",
                                     "Concurso Estímulo ao Emprego Científico Individual")
         self.assertEqual(details["funding_type"], "Emprego científico")
+
+    def test_official_fct_domain_maps_to_broad_site_field(self):
+        offer = Offer(source="fct", kind="call", title="Concurso multidisciplinar",
+                      url="https://www.fct.pt/concursos/teste/",
+                      area_raw="Ciências Naturais")
+        classified = classify(offer)
+        self.assertEqual(classified.field, "Life & Health Sciences")
+        self.assertEqual(classified.subfield, "Natural Sciences")
 
     @patch("academic_offers.sources.fct.fetch")
     def test_enrichment_adds_deadline_category_and_domain(self, mock_fetch):
