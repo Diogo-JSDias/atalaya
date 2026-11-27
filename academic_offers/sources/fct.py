@@ -47,6 +47,8 @@ DEADLINE_LABEL = re.compile(
     r"data\s+limite|prazo(?:\s+(?:final|de|para))?\s+"
     r"(?:candidaturas?|apresenta[cç][ãa]o|submiss[aã]o)|"
     r"submiss[aã]o\s+de\s+candidaturas|"
+    r"per[ií]odo\s+(?:de\s+)?candidaturas?|"
+    r"datas?\s+de\s+submiss[aã]o|"
     r"encerramento\s+(?:das?|de)\s+candidaturas?|"
     r"fecho\s+(?:das?|de)\s+candidaturas?|"
     r"candidaturas?\s+at[eé]|fim\s+do\s+prazo",
