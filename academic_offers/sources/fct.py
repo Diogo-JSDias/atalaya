@@ -84,7 +84,18 @@ def parse_open_listing(html: str, base_url: str = FCT_OPEN) -> list[Offer]:
 
 
 def scrape(today: dt.date | None = None) -> list[Offer]:
-    html = fetch(FCT_OPEN)
-    offers = parse_open_listing(html)
+    offers: list[Offer] = []
+    seen: set[str] = set()
+    # The public listing uses a paged query parameter. Stop at the first empty
+    # page and cap requests so a changed pagination control cannot cause a crawl.
+    for page in range(1, 6):
+        page_url = FCT_OPEN.replace("paged=1", "paged=" + str(page))
+        page_offers = parse_open_listing(fetch(page_url), page_url)
+        if not page_offers:
+            break
+        for offer in page_offers:
+            if offer.url not in seen:
+                seen.add(offer.url)
+                offers.append(offer)
     log.info("FCT open calls: %d candidate records", len(offers))
     return offers
