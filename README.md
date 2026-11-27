@@ -52,7 +52,7 @@ O GitHub Pages num plano gratuito exige um repositório público.
 | `inl` | INL | Portal Jobvite oficial de posições abertas. |
 | `lip` | LIP | Portal oficial de candidaturas; só concursos com estado explicitamente aberto. |
 
-A expansão de 27/11/2026 acrescenta Aveiro, Iscte e Católica-Lisbon, bem como feeds próprios para GIMM, INL e LIP. A cobertura da UCP continua limitada à Católica-Lisbon. O portal de recrutamento da Fundação Champalimaud é carregado dinamicamente e requer uma integração específica; LASI é uma rede de unidades associadas sem um portal único de contratação, pelo que as vagas devem ser recolhidas nas instituições empregadoras participantes. Estas duas fontes permanecem por integrar, não sendo substituídas por feeds presumidos.
+As vagas da edição de 27/11/2026 incluem novas fontes para Aveiro, Iscte, Católica-Lisbon, GIMM, INL e LIP; a segunda vaga acrescenta os concursos de investigadores da UBI e o portal de recrutamento da NOVA IMS. A cobertura da UCP continua limitada à Católica-Lisbon. O portal de recrutamento da Fundação Champalimaud é carregado dinamicamente e requer uma integração específica; LASI é uma rede de unidades associadas sem um portal único de contratação, pelo que as vagas devem ser recolhidas nas instituições empregadoras participantes. Estas duas fontes permanecem por integrar, não sendo substituídas por feeds presumidos.
 
 As fontes portuguesas estão numa fase de validação. Confirma sempre os requisitos e prazos no aviso original. A BEP permanece desligada enquanto não existir acesso automatizado autorizado e estável.
 
