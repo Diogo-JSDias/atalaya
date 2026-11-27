@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from ..models import Offer
-from . import calls, dr, fct, uc_apply, ualg, ulisboa, ist, uporto, uminho, uminho_eeg, novafct_investigadores, ubi_docentes, ubi_investigadores, nova_ims, nova_fcsh, ucp_medicina, ucp_porto, ucp_fch, algoritmi, ieeta, inesc_id, inesc_tec, itqb_nova, lasige, ipleiria, ips, portugal_targets
+from . import calls, dr, fct, uc_apply, ualg, ulisboa, ist, uporto, uminho, uminho_eeg, novafct_investigadores, ubi_docentes, ubi_investigadores, nova_ims, nova_fcsh, ucp_medicina, ucp_porto, ucp_fch, algoritmi, ieeta, inesc_id, inesc_tec, itqb_nova, nova_reitoria, nova_law, lasige, ipleiria, ips, portugal_targets
 
 
 @dataclass
@@ -51,6 +51,10 @@ SOURCES: list[Source] = [
            lambda today, _d: nova_ims.scrape(today), may_be_empty=True),
     Source("nova-fcsh", "NOVA FCSH – concursos para investigadores",
            lambda today, _d: nova_fcsh.scrape(today), may_be_empty=True),
+    Source("nova-reitoria", "Universidade NOVA de Lisboa – Reitoria (pessoal não docente)",
+           lambda today, _d: nova_reitoria.scrape(today), may_be_empty=True),
+    Source("nova-law", "NOVA School of Law – recrutamento de pessoal de investigação",
+           lambda today, _d: nova_law.scrape(today), may_be_empty=True),
     Source("ucp-medicina", "Universidade Católica Portuguesa – Faculdade de Medicina",
            lambda today, _d: ucp_medicina.scrape(today), may_be_empty=True),
     Source("ucp-porto", "Universidade Católica Portuguesa – Centro Regional do Porto",
