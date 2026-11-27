@@ -147,6 +147,15 @@ class FCTSourceTests(unittest.TestCase):
         details = parse_detail_page(html, "Concurso para Projetos ICDT")
         self.assertEqual(details["funding_type"], "Bolsas")
 
+    def test_old_orthography_project_category_is_recognised(self):
+        html = """
+        <main><table>
+          <tr><th>Tipo de financiamento</th><td>Projectos I&D</td></tr>
+        </table></main>
+        """
+        details = parse_detail_page(html, "Concurso aberto")
+        self.assertEqual(details["funding_type"], "Projetos I&D")
+
     def test_title_category_recognises_scientific_employment(self):
         details = parse_detail_page("<main><p>Concurso aberto.</p></main>",
                                     "Concurso Estímulo ao Emprego Científico Individual")
