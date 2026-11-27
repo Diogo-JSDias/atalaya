@@ -115,6 +115,27 @@ class UBIDocentesTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             parse_listing(changed_html)
 
+    def test_does_not_fall_through_to_closed_table_when_open_table_disappears(self):
+        closed_only_html = """
+        <h2>Concursos para Docentes</h2>
+        <h3>Candidaturas a decorrer:</h3>
+        <h3>Candidaturas encerradas:</h3>
+        <table>
+          <tr>
+            <th>Categoria/Position</th><th>Área Disciplinar</th>
+            <th>Postos de trabalho</th><th>Anúncios</th><th>Edital</th>
+            <th>Data e hora Limite</th><th>Registo</th>
+          </tr>
+          <tr>
+            <td>Auxiliar/Assistant</td><td>Psicologia</td><td>1</td><td></td>
+            <td><a href="/old.pdf">Edital nº 727/2026</a></td>
+            <td>29/07/2026 17.30 Horas</td><td></td>
+          </tr>
+        </table>
+        """
+        with self.assertRaises(RuntimeError):
+            parse_listing(closed_only_html)
+
     def test_detects_missing_open_section_table(self):
         changed_html = "<h2>Concursos para Docentes</h2><h3>Candidaturas a decorrer</h3>"
         with self.assertRaises(RuntimeError):
