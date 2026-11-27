@@ -35,6 +35,20 @@ class DiarioRepublicaSourceTests(unittest.TestCase):
         )
         self.assertEqual(offers[0].published, "2026-11-02")
 
+    def test_atom_entry_supports_href_and_iso_date(self):
+        atom = '''<?xml version="1.0"?>
+        <feed xmlns="http://www.w3.org/2005/Atom">
+          <entry>
+            <title>Concurso para contratação de investigador doutorado</title>
+            <link href="https://diariodarepublica.pt/dr/detalhe/aviso/999/2026" />
+            <updated>2026-11-26T14:30:00Z</updated>
+          </entry>
+        </feed>'''
+        offers = parse_feed(atom)
+        self.assertEqual(len(offers), 1)
+        self.assertEqual(offers[0].url, "https://diariodarepublica.pt/dr/detalhe/aviso/999/2026")
+        self.assertEqual(offers[0].published, "2026-11-26")
+
     def test_invalid_xml_returns_empty_list(self):
         self.assertEqual(parse_feed("<rss>"), [])
 
