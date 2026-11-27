@@ -6,7 +6,7 @@ on:
   workflow_dispatch:        # "Run workflow" button in the Actions tab
   push:
     branches: [main]
-    paths: ["academic_offers/**", "templates/**", "requirements.txt", ".github/workflows/**"]
+    paths: ["academic_offers/**", "tests/**", "templates/**", "requirements.txt", ".github/workflows/**"]
 
 permissions:
   contents: write   # commit the updated database
