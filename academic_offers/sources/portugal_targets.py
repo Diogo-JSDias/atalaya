@@ -180,7 +180,10 @@ def lip(today: dt.date | None = None) -> list[Offer]:
     text = _clean(soup.get_text(" ", strip=True))
     heading = soup.find("h1")
     title = _clean(heading.get_text(" ", strip=True)) if heading else ""
-    if not title or not re.search(r"\bopen\b|\baberto\b|\ba decorrer\b", text, re.I):
+    if not title or not re.search(
+        r"open\\s*[-–]\\s*(?:applications?|candidaturas?)|candidaturas? abertas|accepting applications",
+        text, re.I,
+    ):
         return []
     if CLOSED.search(text):
         return []
