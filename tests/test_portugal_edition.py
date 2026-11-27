@@ -51,7 +51,7 @@ class PortugalEditionTests(unittest.TestCase):
         self.assertEqual(count, 22)
         self.assertEqual(
             {row["source"] for row in rows},
-            {"dr", "fct", "ulisboa", "uporto", "ualg", "uc-apply", "uminho-eeg", "novafct-investigadores", "ubi-docentes", "ubi-investigadores", "nova-ims", "nova-fcsh", "gimm", "inl", "iscte", "lip", "ua-investigacao", "ua-docentes", "ua-tecnico", "ucp-clsbe", "eu-ft"},
+            {"dr", "fct", "ulisboa", "uporto", "ualg", "uc-apply", "uminho-eeg", "novafct-investigadores", "ubi-docentes", "ubi-investigadores", "nova-ims", "nova-fcsh", "ucp-medicina", "gimm", "inl", "iscte", "lip", "ua-investigacao", "ua-docentes", "ua-tecnico", "ucp-clsbe", "eu-ft"},
         )
         self.assertFalse(any(row["id"] == "legacy-spanish" for row in rows))
 
