@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from ..models import Offer
-from . import calls, dr, fct, uc_apply, ualg, ulisboa, ist, uporto, uminho, uminho_eeg, novafct_investigadores, ubi_docentes, ubi_investigadores, nova_ims, nova_fcsh, ucp_medicina, ucp_porto, ucp_fch, algoritmi, ieeta, inesc_id, inesc_tec, itqb_nova, portugal_targets
+from . import calls, dr, fct, uc_apply, ualg, ulisboa, ist, uporto, uminho, uminho_eeg, novafct_investigadores, ubi_docentes, ubi_investigadores, nova_ims, nova_fcsh, ucp_medicina, ucp_porto, ucp_fch, algoritmi, ieeta, inesc_id, inesc_tec, itqb_nova, lasige, ipleiria, ips, portugal_targets
 
 
 @dataclass
@@ -70,6 +70,9 @@ SOURCES: list[Source] = [
     Source("ieeta", "IEETA – Universidade de Aveiro (Rede LASI)", lambda today, _d: ieeta.scrape(today), may_be_empty=True),
     Source("inesc-id", "INESC-ID", lambda today, _d: inesc_id.scrape(today), may_be_empty=True),
     Source("itqb-nova", "ITQB NOVA", lambda today, _d: itqb_nova.scrape(today), may_be_empty=True),
+    Source("lasige", "LASIGE – Faculdade de Ciências, Universidade de Lisboa", lambda today, _d: lasige.scrape(today), may_be_empty=True),
+    Source("ipleiria", "Universidade de Leiria e Oeste (ex-IPLeiria) – bolsas de I&D+i", lambda today, _d: ipleiria.scrape(today), may_be_empty=True),
+    Source("ips", "Universidade Politécnica de Setúbal (UNIPS; antigo IPS) – candidaturas abertas", lambda today, _d: ips.scrape(today), may_be_empty=True),
     Source("ipatimup", "Ipatimup – Instituto de Patologia e Imunologia Molecular da Universidade do Porto (Rede LASI)", lambda today, _d: portugal_targets.ipatimup(today), may_be_empty=True),
     Source("inescc", "INESC Coimbra – Instituto de Engenharia de Sistemas e Computadores de Coimbra (Rede LASI)", lambda today, _d: portugal_targets.inescc(today), may_be_empty=True),
     Source("cintesis", "CINTESIS – Centro de Investigação em Tecnologias e Serviços de Saúde", lambda today, _d: portugal_targets.cintesis(today), may_be_empty=True),
