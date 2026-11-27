@@ -5,7 +5,7 @@ This fork is being adapted incrementally. The Spanish sources remain unchanged.
 ## Implemented
 
 - Diário da República: registered a first-pass scraper for the official RSS index of the 2nd series (all parts, HTML). The parser supports RSS and Atom entries, filters likely recruitment/research notices by title and preserves the original notice URL. Its live response and classification quality still need validation in GitHub Actions; verify each notice and deadline at source.
-- FCT: registered a first-pass parser for the official open-concursos tab. It keeps links hosted on fct.pt, deduplicates records and extracts only explicit numeric deadlines. It does not treat the planned or closed tabs as open calls. Live HTML selector coverage and pagination still need validation.
+- FCT: registered a parser for the official open-concursos tab. It follows same-domain detail pages (up to 40 per run), extracts full deadlines only when linked to submission/closing labels, and records funding type and scientific domain only when supported by the title or structured page metadata. Failed detail requests leave the listing record intact. Live source coverage and extraction quality still need runtime validation.
 - Portuguese month names are recognised by `academic_offers.dates.first_date`.
 - The classifier recognises a first set of Portuguese academic/research role labels, including professor catedrático, professor associado, professor auxiliar, investigador principal/auxiliar, pós-doutoramento and doutoramento.
 - Regression tests cover Portuguese month names and the numeric date format commonly used in Portugal.
