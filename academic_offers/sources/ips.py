@@ -148,7 +148,7 @@ def parse_listing(
             continue
         seen.add(detail_url)
 
-        published_match = re.search(r"Publicado\\s+a\\s*(.*?)(?=\\s+Aviso|$)", card_text, re.I)
+        published_match = re.search(r"Publicado\s+a\s*(.*?)(?=\s+Aviso|$)", card_text, re.I)
         published = first_date(published_match.group(1)) if published_match else None
         notes = f"Candidaturas até {deadline}."
         if published:
