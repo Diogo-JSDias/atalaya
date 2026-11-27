@@ -1,4 +1,5 @@
 """Offline regression tests for new Portuguese university and centre adapters."""
+import datetime as dt
 import unittest
 from academic_offers.sources import portugal_targets as pt
 
@@ -74,11 +75,8 @@ class PortugalTargetsTests(unittest.TestCase):
           <li class="job"><a href="/Home/Detail/202">Assistente Técnico</a>
           <span>Candidaturas até 03-10-2026</span></li>
         </ul></main>"""
-        offers = pt.parse_link_board(
-            html, base_url=pt.UA_TAG_URL, source="ua-tecnico",
-            institution="Universidade de Aveiro", region="Aveiro",
-            href_pattern=r"/Home/Detail/\d+", domains=("ua.pt",),
-        )
+        with patch.object(pt, "fetch", return_value=html):
+            offers = pt.ua_technical(today=dt.date(2026, 11, 27))
         self.assertEqual(len(offers), 1)
         self.assertEqual(offers[0].deadline, "2026-12-03")
 
