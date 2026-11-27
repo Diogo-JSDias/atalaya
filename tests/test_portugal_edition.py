@@ -24,13 +24,16 @@ class PortugalEditionTests(unittest.TestCase):
             {"source": "boe", "id": "legacy-spanish", "title": "Old Spanish offer"},
             {"source": "dr", "id": "portuguese-dr", "title": "Aviso português"},
             {"source": "fct", "id": "portuguese-fct", "title": "Concurso FCT"},
+            {"source": "ulisboa", "id": "ulisboa-offer", "title": "Oferta ULisboa"},
+            {"source": "uporto", "id": "uporto-offer", "title": "Oferta U.Porto"},
+            {"source": "uc-apply", "id": "coimbra-offer", "title": "Bolsa UC"},
             {"source": "eu-ft", "id": "european-call", "title": "ERC call"},
         ]
         with tempfile.TemporaryDirectory() as tmp:
             count = build_site(object(), dt.date(2026, 11, 27), Path(tmp))
             rows = json.loads((Path(tmp) / "offers.json").read_text(encoding="utf-8"))
-        self.assertEqual(count, 3)
-        self.assertEqual({row["source"] for row in rows}, {"dr", "fct", "eu-ft"})
+        self.assertEqual(count, 6)
+        self.assertEqual({row["source"] for row in rows}, {"dr", "fct", "ulisboa", "uporto", "uc-apply", "eu-ft"})
         self.assertFalse(any(row["id"] == "legacy-spanish" for row in rows))
 
 
