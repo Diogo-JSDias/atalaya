@@ -1,6 +1,7 @@
 """Offline regression tests for new Portuguese university and centre adapters."""
 import datetime as dt
 import unittest
+from unittest.mock import patch
 from academic_offers.sources import portugal_targets as pt
 
 
