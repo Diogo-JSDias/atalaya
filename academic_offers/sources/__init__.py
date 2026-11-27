@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from ..models import Offer
-from . import calls, dr, fct, uc_apply, ualg, ulisboa, uporto, uminho, uminho_eeg, novafct_investigadores, ubi_docentes, ubi_investigadores, nova_ims, nova_fcsh, ucp_medicina, ucp_porto, ucp_fch, algoritmi, ieeta, inesc_tec, portugal_targets
+from . import calls, dr, fct, uc_apply, ualg, ulisboa, uporto, uminho, uminho_eeg, novafct_investigadores, ubi_docentes, ubi_investigadores, nova_ims, nova_fcsh, ucp_medicina, ucp_porto, ucp_fch, algoritmi, ieeta, inesc_id, inesc_tec, itqb_nova, portugal_targets
 
 
 @dataclass
@@ -66,6 +66,8 @@ SOURCES: list[Source] = [
     Source("inesc-tec", "INESC TEC (Rede LASI)", lambda today, _d: inesc_tec.scrape(today), may_be_empty=True),
     Source("algoritmi", "Centro ALGORITMI – Universidade do Minho (Rede LASI)", lambda today, _d: algoritmi.scrape(today), may_be_empty=True),
     Source("ieeta", "IEETA – Universidade de Aveiro (Rede LASI)", lambda today, _d: ieeta.scrape(today), may_be_empty=True),
+    Source("inesc-id", "INESC-ID", lambda today, _d: inesc_id.scrape(today), may_be_empty=True),
+    Source("itqb-nova", "ITQB NOVA", lambda today, _d: itqb_nova.scrape(today), may_be_empty=True),
     Source("eu-ft", "EU Funding & Tenders – concursos ERC e MSCA",
            lambda today, _d: calls.eu_calls(today), may_be_empty=True),
 ]
