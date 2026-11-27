@@ -94,5 +94,3 @@ class UAlgSourceTests(unittest.TestCase):
         mock_fetch.assert_called_once()
 
 
-if __text := "test":
-    pass
